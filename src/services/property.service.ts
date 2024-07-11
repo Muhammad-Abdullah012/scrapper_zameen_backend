@@ -1,6 +1,5 @@
 import Container, { Service } from 'typedi';
-import { QueryTypes } from 'sequelize';
-import { sequelize } from '@config/sequelize';
+import { pgPool } from '@config/sequelize';
 import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL } from '@config/index';
 import {
   AVAILABLE_CITIES,
@@ -47,9 +46,9 @@ export class PropertyService {
     return properties.map(property => `"${property}"`).join(',');
   }
 
-  private async mapPropertiesDetails(properties: object[]) {
+  private async mapPropertiesDetails(properties: IProperty[]) {
     const promises = await Promise.allSettled(
-      properties.map(async (property: any) => {
+      properties.map(async (property: IProperty) => {
         const externalId = property?.url?.split('-').slice(-3)[0];
         const [popularity_trends, area_trends, contact] = await Promise.allSettled([
           axios.get(`${POPULARITY_TREND_URL}${externalId}`),
@@ -73,34 +72,27 @@ export class PropertyService {
     );
     return promises.map(promise => (promise.status === 'fulfilled' ? promise.value : null)).filter(v => v != null);
   }
-  private async getTotalCount(baseQuery: string, replacements: any): Promise<number> {
+  private async getTotalCount(baseQuery: string, replacements: string[]): Promise<number> {
     const countQuery = `SELECT COUNT(*) as total ${baseQuery};`;
     const cacheKey = `getTotalCount:${Buffer.from(countQuery + JSON.stringify(replacements)).toString('base64')}`;
     const cachedResult = await this.redis.getRedisValue(cacheKey);
     if (cachedResult) {
       return JSON.parse(cachedResult)[0]['total'];
     }
-    const countResult = await sequelize.query(countQuery, {
-      type: QueryTypes.SELECT,
-      replacements,
-    });
+    const countResult = (await pgPool.query(countQuery, replacements)).rows;
     await this.redis.setRedisValue({ key: cacheKey, value: JSON.stringify(countResult) });
     return countResult[0]['total'];
   }
 
-  private async getTotalCountGroupedByTypes(baseQuery: string, replacements: any): Promise<{ [key: string]: number }> {
+  private async getTotalCountGroupedByTypes(baseQuery: string, replacements: string[]): Promise<{ [key: string]: number }> {
     const countQuery = `SELECT type, COUNT(*) as total ${baseQuery} GROUP BY type;`;
     const cacheKey = `getTotalCountGroupedByTypes:${Buffer.from(countQuery + JSON.stringify(replacements)).toString('base64')}`;
     const cachedResult = await this.redis.getRedisValue(cacheKey);
     if (cachedResult) {
       return JSON.parse(cachedResult);
     }
-    const countResult = await sequelize.query(countQuery, {
-      type: QueryTypes.SELECT,
-      replacements,
-    });
-
-    const map = countResult.reduce<{ [key: string]: number }>((map, row: { type: string; total: number }) => {
+    const countResult = await pgPool.query(countQuery, replacements);
+    const map = countResult.rows.reduce<{ [key: string]: number }>((map, row: { type: string; total: number }) => {
       map[row.type] = row.total;
       return map;
     }, {});
@@ -119,38 +111,39 @@ export class PropertyService {
     start_date,
     end_date,
     purpose,
-  }: IConstructBaseQueryProps): { baseQuery: string; replacements: any } {
+  }: IConstructBaseQueryProps): { baseQuery: string; replacements: string[]; index: number } {
     let baseQuery = `FROM property_v2 WHERE 1=1 `;
-    const replacements: any = {};
-
+    const replacements: string[] = [];
+    let index = 1;
     if (city) {
-      baseQuery += `AND location ILIKE :city `;
-      replacements.city = `%${city}%`;
+      baseQuery += `AND location ILIKE $${index++} `;
+      replacements.push(`%${city}%`);
     }
 
     if (search) {
-      baseQuery += `AND (header ILIKE :search OR location ILIKE :search OR bath ILIKE :search OR purpose ILIKE :search OR initial_amount ILIKE :search OR monthly_installment ILIKE :search OR remaining_installments ILIKE :search) `;
-      replacements.search = `%${search}%`;
+      baseQuery += `AND (header ILIKE $${index} OR location ILIKE $${index} OR bath ILIKE $${index} OR purpose ILIKE $${index} OR initial_amount ILIKE $${index} OR monthly_installment ILIKE $${index} OR remaining_installments ILIKE $${index}) `;
+      replacements.push(`%${search}%`);
+      ++index;
     }
 
     if (property_types.length > 0) {
-      baseQuery += `AND type IN (:property_types) `;
-      replacements.property_types = property_types;
+      baseQuery += `AND type IN (${property_types.map(() => `$${index++}`)}) `;
+      replacements.push(...property_types);
     }
 
     if (bedrooms) {
-      baseQuery += `AND bedroom IN (:bedrooms) `;
-      replacements.bedrooms = bedrooms.split(',');
+      baseQuery += `AND bedroom IN (${bedrooms.split(',').map(() => `$${index++}`)}) `;
+      replacements.push(...bedrooms.split(',').map(v => `${v} Bed`));
     }
 
     if (price_min) {
-      baseQuery += `AND price >= :price_min `;
-      replacements.price_min = Number(price_min);
+      baseQuery += `AND price >= $${index++} `;
+      replacements.push(price_min);
     }
 
     if (price_max) {
-      baseQuery += `AND price <= :price_max `;
-      replacements.price_max = Number(price_max);
+      baseQuery += `AND price <= $${index++} `;
+      replacements.push(price_max);
     }
 
     if (area_min) {
@@ -162,8 +155,8 @@ export class PropertyService {
             ELSE 0
           END
         )`;
-      baseQuery += ` >= :min_area `;
-      replacements.min_area = Number(area_min);
+      baseQuery += ` >= $${index++} `;
+      replacements.push(area_min);
     }
 
     if (area_max) {
@@ -175,26 +168,26 @@ export class PropertyService {
             ELSE 0
           END
         )`;
-      baseQuery += ` <= :max_area `;
-      replacements.max_area = Number(area_max);
+      baseQuery += ` <= $${index++} `;
+      replacements.push(area_max);
     }
     const MILLISECONDS_PER_SECOND = 1000;
     if (start_date) {
-      baseQuery += `AND added >= :start_date `;
-      replacements.start_date = Date.parse(start_date) / MILLISECONDS_PER_SECOND;
+      baseQuery += `AND added >= $${index++} `;
+      replacements.push((Date.parse(start_date) / MILLISECONDS_PER_SECOND).toString());
     }
 
     if (end_date) {
-      baseQuery += `AND added < :end_date `;
-      replacements.end_date = Date.parse(end_date) / MILLISECONDS_PER_SECOND;
+      baseQuery += `AND added < $${index++} `;
+      replacements.push((Date.parse(end_date) / MILLISECONDS_PER_SECOND).toString());
     }
 
     if (purpose) {
-      baseQuery += `AND purpose ILIKE :purpose `;
-      replacements.purpose = `%${purpose}%`;
+      baseQuery += `AND purpose ILIKE $${index++} `;
+      replacements.push(`%${purpose}%`);
     }
 
-    return { baseQuery, replacements };
+    return { baseQuery, replacements, index };
   }
   public async findAllProperties({
     city,
@@ -206,19 +199,16 @@ export class PropertyService {
   }: IFindAllPropertiesProps): Promise<any> {
     this.validateSortParams(sort_by, sort_order);
 
-    const { baseQuery, replacements } = this.constructBaseQuery({ city, purpose });
+    const { baseQuery, replacements, index } = this.constructBaseQuery({ city, purpose });
+
     const totalCountPromise = this.getTotalCount(baseQuery, replacements);
 
     const offset = (page_number - 1) * page_size;
 
-    const query = `SELECT ${this.selectAllProperties()} ${baseQuery} ORDER BY ${sort_by} ${sort_order} LIMIT :page_size OFFSET :offset`;
-    replacements.page_size = page_size;
-    replacements.offset = offset;
+    const query = `SELECT ${this.selectAllProperties()} ${baseQuery} ORDER BY ${sort_by} ${sort_order} LIMIT $${index} OFFSET $${index + 1}`;
 
-    const propertiesPromise = sequelize.query<IProperty>(query, {
-      type: QueryTypes.SELECT,
-      replacements,
-    });
+    const propertiesPromise = pgPool.query<IProperty>(query, [...replacements, page_size.toString(), offset.toString()]);
+
     const [propertiesResult, totalCountResult] = await Promise.allSettled([propertiesPromise, totalCountPromise]);
 
     if (propertiesResult.status === 'rejected') {
@@ -227,16 +217,13 @@ export class PropertyService {
     if (totalCountResult.status === 'rejected') {
       logger.error(`Error fetching total count: ${totalCountResult.reason}`);
     }
-    const properties = propertiesResult.status === 'fulfilled' ? propertiesResult.value : [];
+    const properties = propertiesResult.status === 'fulfilled' ? propertiesResult.value.rows : [];
     const totalCount = totalCountResult.status === 'fulfilled' ? totalCountResult.value : 0;
 
     return { properties, total_count: totalCount };
   }
   public async findPropertyById(propertyId: number) {
-    const property = await sequelize.query(`SELECT * FROM property_v2 WHERE id = :propertyId`, {
-      type: QueryTypes.SELECT,
-      replacements: { propertyId },
-    });
+    const property = (await pgPool.query<IProperty>(`SELECT * FROM property_v2 WHERE id = $1`, [propertyId])).rows;
 
     return this.mapPropertiesDetails(property);
   }
@@ -275,13 +262,8 @@ export class PropertyService {
   }
 
   public async autoCompleteLocation(search: string) {
-    const query = `SELECT DISTINCT location FROM property_v2 WHERE location ILIKE :search LIMIT 10`;
-    return (
-      await sequelize.query<{ location: string }>(query, {
-        type: QueryTypes.SELECT,
-        replacements: { search: `%${search}%` },
-      })
-    ).map(item => item.location);
+    const query = `SELECT DISTINCT location FROM property_v2 WHERE location ILIKE $1 LIMIT 10`;
+    return (await pgPool.query<{ location: string }>(query, [`%${search}%`])).rows.map(row => row.location);
   }
 
   public async searchProperties({
@@ -303,7 +285,7 @@ export class PropertyService {
   }: ISearchPropertiesProps): Promise<any> {
     this.validateSortParams(sort_by, sort_order);
 
-    const { baseQuery, replacements } = this.constructBaseQuery({
+    const { baseQuery, replacements, index } = this.constructBaseQuery({
       city,
       search,
       property_types: property_type ? [property_type] : [],
@@ -320,14 +302,9 @@ export class PropertyService {
 
     const offset = (page_number - 1) * page_size;
 
-    const query = `SELECT ${this.selectAllProperties()} ${baseQuery} ORDER BY ${sort_by} ${sort_order} LIMIT :page_size OFFSET :offset`;
-    replacements.page_size = page_size;
-    replacements.offset = offset;
+    const query = `SELECT ${this.selectAllProperties()} ${baseQuery} ORDER BY ${sort_by} ${sort_order} LIMIT $${index} OFFSET $${index + 1}`;
 
-    const propertiesPromise = sequelize.query<IProperty>(query, {
-      type: QueryTypes.SELECT,
-      replacements,
-    });
+    const propertiesPromise = pgPool.query<IProperty>(query, [...replacements, page_size.toString(), offset.toString()]);
     const getPropertiesCountMapPromise = this.getPropertiesCountMap({
       city,
       search,
@@ -355,7 +332,7 @@ export class PropertyService {
     if (totalCountResult.status === 'rejected') {
       logger.error(`Error fetching total count: ${totalCountResult.reason}`);
     }
-    const properties = propertiesResult.status === 'fulfilled' ? propertiesResult.value : [];
+    const properties = propertiesResult.status === 'fulfilled' ? propertiesResult.value.rows : [];
     const propertiesMap = propertiesMapResult.status === 'fulfilled' ? propertiesMapResult.value : {};
     const totalCount = totalCountResult.status === 'fulfilled' ? totalCountResult.value : 0;
     return {

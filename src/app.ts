@@ -16,7 +16,7 @@ import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, SESSION_SECRET_KEY } f
 import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
-import { sequelize } from './config/sequelize';
+import { pgPool } from './config/sequelize';
 import { PropertyDetailResponseSchema, PropertyResponseSchema } from './models/property.schema';
 import { RedisService } from './services/redis.service';
 
@@ -44,8 +44,8 @@ export class App {
         logger.info(`======= ENV: ${this.env} =======`);
         logger.info(`🚀 App listening on the port ${this.port}`);
         logger.info(`=================================`);
-        sequelize
-          .authenticate()
+        pgPool
+          .query('SELECT 1+1 AS result')
           .then(() => {
             logger.info('Connection has been established successfully.');
           })

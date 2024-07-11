@@ -165,7 +165,7 @@ describe('Property', () => {
   });
   describe('GET /property/:id', () => {
     it('should retrieve a property by ID', async () => {
-      propertyServiceMock.findPropertyById.mockResolvedValue([{ id: 1 }]);
+      propertyServiceMock.findPropertyById.mockResolvedValue([{ id: 1 } as any]);
       const response = await request(app).get('/property/1');
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
@@ -560,7 +560,7 @@ describe('Property', () => {
           available: true,
           area: '20 Marla',
           location: 'Islamabad',
-        },
+        } as any,
       ]);
       propertyServiceMock.searchProperties.mockResolvedValue({
         total_count: 2,
