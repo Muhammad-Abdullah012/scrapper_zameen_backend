@@ -5,7 +5,7 @@ import { RedisService } from '@/services/redis.service';
 export const getPropertyTypes = async () => {
   const redis = Container.get(RedisService);
   const query = 'SELECT DISTINCT type FROM property_v2;';
-  const cacheKey = `getPropertyTypes:${Buffer.from(query)}`;
+  const cacheKey = `getPropertyTypes:${Buffer.from(query).toString('base64')}`;
   const redisValue = await redis.getRedisValue(cacheKey);
   if (redisValue) {
     return JSON.parse(redisValue);
@@ -18,7 +18,7 @@ export const getPropertyTypes = async () => {
 export const getPropertyPurpose = async () => {
   const redis = Container.get(RedisService);
   const query = 'SELECT DISTINCT purpose FROM property_v2;';
-  const cacheKey = `getPropertyPurpose:${Buffer.from(query)}`;
+  const cacheKey = `getPropertyPurpose:${Buffer.from(query).toString('base64')}`;
   const redisValue = await redis.getRedisValue(cacheKey);
   if (redisValue) {
     return JSON.parse(redisValue);
