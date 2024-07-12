@@ -234,6 +234,12 @@ paths:
           description: Properties inserted until this date (exclusive). Date should be in ISO date string format.
           type: string
           default: ""
+        - name: purpose
+          in: query
+          description: Purpose of property
+          type: string
+          default: ""
+          example: "For Rent"
       responses:
         200:
           description: A list of properties
@@ -426,6 +432,34 @@ paths:
                     example: "findOne"
         404:
           description: Property not found
+  /property/suggestions:
+    get:
+      tags:
+      - property
+      summary: Retrieve suggestions for locations of properties
+      description: Retrieve a list of suggestions
+      parameters:
+        - name: query
+          in: query
+          description: text for autocomplete suggestions
+          required: true
+          type: string
+          default: ''
+      responses:
+        200:
+          description: A list of suggestions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                  message:
+                    type: string
+                    example: "auto-complete-locations"
   /property/available-cities:
     get:
       tags:
