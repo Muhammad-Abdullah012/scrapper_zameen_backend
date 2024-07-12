@@ -222,10 +222,10 @@ export class PropertyService {
 
     return { properties, total_count: totalCount };
   }
-  public async findPropertyById(propertyId: number) {
-    const property = (await pgPool.query<IProperty>(`SELECT * FROM property_v2 WHERE id = $1`, [propertyId])).rows;
+  public async findPropertyById(propertyId: number, fields: string = '*', mapped = true) {
+    const property = (await pgPool.query<IProperty>(`SELECT ${fields} FROM property_v2 WHERE id = $1`, [propertyId])).rows;
 
-    return this.mapPropertiesDetails(property);
+    return mapped ? this.mapPropertiesDetails(property) : property;
   }
 
   public async availableCitiesData() {

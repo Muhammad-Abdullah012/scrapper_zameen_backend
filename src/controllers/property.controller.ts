@@ -164,7 +164,7 @@ export class PropertyController {
         page_number: string;
         purpose: string;
       };
-      const property = await this.property.findPropertyById(Number(id));
+      const property = await this.property.findPropertyById(Number(id), 'type, location', false);
       const similarProperties = await this.property.searchProperties({
         page_number: Number(page_number),
         page_size: Number(page_size),
