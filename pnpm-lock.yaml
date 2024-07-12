@@ -78,8 +78,8 @@ importers:
         specifier: ^2.3.4
         version: 2.3.4
       redis:
-        specifier: ^4.6.14
-        version: 4.6.14
+        specifier: ^4.6.15
+        version: 4.6.15
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -99,11 +99,11 @@ importers:
         specifier: ^0.10.0
         version: 0.10.0
       winston:
-        specifier: ^3.13.0
-        version: 3.13.0
+        specifier: ^3.13.1
+        version: 3.13.1
       winston-daily-rotate-file:
         specifier: ^5.0.0
-        version: 5.0.0(winston@3.13.0)
+        version: 5.0.0(winston@3.13.1)
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -670,8 +670,8 @@ packages:
     peerDependencies:
       '@redis/client': ^1.0.0
 
-  '@redis/client@1.5.16':
-    resolution: {integrity: sha512-X1a3xQ5kEMvTib5fBrHKh6Y+pXbeKXqziYuxOUo1ojQNECg4M5Etd1qqyhMap+lFUOAh8S7UYevgJHOm4A+NOg==}
+  '@redis/client@1.5.17':
+    resolution: {integrity: sha512-IPvU9A31qRCZ7lds/x+ksuK/UMndd0EASveAvCvEtFFKIZjZ+m/a4a0L7S28KEWoR5ka8526hlSghDo4Hrc2Hg==}
     engines: {node: '>=14'}
 
   '@redis/graph@1.1.1':
@@ -3173,8 +3173,8 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
-  redis@4.6.14:
-    resolution: {integrity: sha512-GrNg/e33HtsQwNXL7kJT+iNFPSwE1IPmd7wzV3j4f2z0EYxZfZE7FVTmUysgAtqQQtg5NXF5SNLR9OdO/UHOfw==}
+  redis@4.6.15:
+    resolution: {integrity: sha512-2NtuOpMW3tnYzBw6S8mbXSX7RPzvVFCA2wFJq9oErushO2UeBkxObk+uvo7gv7n0rhWeOj/IzrHO8TjcFlRSOg==}
 
   reflect-metadata@0.2.2:
     resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
@@ -3795,8 +3795,8 @@ packages:
     resolution: {integrity: sha512-ajBj65K5I7denzer2IYW6+2bNIVqLGDHqDw3Ow8Ohh+vdW+rv4MZ6eiDvHoKhfJFZ2auyN8byXieDDJ96ViONg==}
     engines: {node: '>= 12.0.0'}
 
-  winston@3.13.0:
-    resolution: {integrity: sha512-rwidmA1w3SE4j0E5MuIufFhyJPBDG7Nu71RkZor1p2+qHvJSZ9GYDA81AyleQcZbh/+V6HjeBdfnTZJm9rSeQQ==}
+  winston@3.13.1:
+    resolution: {integrity: sha512-SvZit7VFNvXRzbqGHsv5KSmgbEYR5EiQfDAL9gxYkRqa934Hnk++zze0wANKtMHcy/gI4W/3xmSDwlhf865WGw==}
     engines: {node: '>= 12.0.0'}
 
   wkx@0.5.0:
@@ -4520,31 +4520,31 @@ snapshots:
 
   '@pkgr/core@0.1.1': {}
 
-  '@redis/bloom@1.2.0(@redis/client@1.5.16)':
+  '@redis/bloom@1.2.0(@redis/client@1.5.17)':
     dependencies:
-      '@redis/client': 1.5.16
+      '@redis/client': 1.5.17
 
-  '@redis/client@1.5.16':
+  '@redis/client@1.5.17':
     dependencies:
       cluster-key-slot: 1.1.2
       generic-pool: 3.9.0
       yallist: 4.0.0
 
-  '@redis/graph@1.1.1(@redis/client@1.5.16)':
+  '@redis/graph@1.1.1(@redis/client@1.5.17)':
     dependencies:
-      '@redis/client': 1.5.16
+      '@redis/client': 1.5.17
 
-  '@redis/json@1.0.6(@redis/client@1.5.16)':
+  '@redis/json@1.0.6(@redis/client@1.5.17)':
     dependencies:
-      '@redis/client': 1.5.16
+      '@redis/client': 1.5.17
 
-  '@redis/search@1.1.6(@redis/client@1.5.16)':
+  '@redis/search@1.1.6(@redis/client@1.5.17)':
     dependencies:
-      '@redis/client': 1.5.16
+      '@redis/client': 1.5.17
 
-  '@redis/time-series@1.0.5(@redis/client@1.5.16)':
+  '@redis/time-series@1.0.5(@redis/client@1.5.17)':
     dependencies:
-      '@redis/client': 1.5.16
+      '@redis/client': 1.5.17
 
   '@sinclair/typebox@0.27.8': {}
 
@@ -7290,14 +7290,14 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
-  redis@4.6.14:
+  redis@4.6.15:
     dependencies:
-      '@redis/bloom': 1.2.0(@redis/client@1.5.16)
-      '@redis/client': 1.5.16
-      '@redis/graph': 1.1.1(@redis/client@1.5.16)
-      '@redis/json': 1.0.6(@redis/client@1.5.16)
-      '@redis/search': 1.1.6(@redis/client@1.5.16)
-      '@redis/time-series': 1.0.5(@redis/client@1.5.16)
+      '@redis/bloom': 1.2.0(@redis/client@1.5.17)
+      '@redis/client': 1.5.17
+      '@redis/graph': 1.1.1(@redis/client@1.5.17)
+      '@redis/json': 1.0.6(@redis/client@1.5.17)
+      '@redis/search': 1.1.6(@redis/client@1.5.17)
+      '@redis/time-series': 1.0.5(@redis/client@1.5.17)
 
   reflect-metadata@0.2.2: {}
 
@@ -7863,12 +7863,12 @@ snapshots:
     dependencies:
       isexe: 3.1.1
 
-  winston-daily-rotate-file@5.0.0(winston@3.13.0):
+  winston-daily-rotate-file@5.0.0(winston@3.13.1):
     dependencies:
       file-stream-rotator: 0.6.1
       object-hash: 3.0.0
       triple-beam: 1.4.1
-      winston: 3.13.0
+      winston: 3.13.1
       winston-transport: 4.7.0
 
   winston-transport@4.7.0:
@@ -7877,7 +7877,7 @@ snapshots:
       readable-stream: 3.6.2
       triple-beam: 1.4.1
 
-  winston@3.13.0:
+  winston@3.13.1:
     dependencies:
       '@colors/colors': 1.6.0
       '@dabh/diagnostics': 2.0.3
