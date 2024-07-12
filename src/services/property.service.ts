@@ -80,7 +80,7 @@ export class PropertyService {
       return JSON.parse(cachedResult)[0]['total'];
     }
     const countResult = (await pgPool.query(countQuery, replacements)).rows;
-    await this.redis.setRedisValue({ key: cacheKey, value: JSON.stringify(countResult) });
+    this.redis.setRedisValue({ key: cacheKey, value: JSON.stringify(countResult) });
     return countResult[0]['total'];
   }
 
@@ -96,7 +96,7 @@ export class PropertyService {
       map[row.type] = row.total;
       return map;
     }, {});
-    await this.redis.setRedisValue({ key: cacheKey, value: JSON.stringify(map) });
+    this.redis.setRedisValue({ key: cacheKey, value: JSON.stringify(map) });
     return map;
   }
   private constructBaseQuery({

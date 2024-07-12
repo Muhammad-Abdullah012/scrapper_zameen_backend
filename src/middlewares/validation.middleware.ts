@@ -40,10 +40,7 @@ export const validateCityParam = (req: Request, res: Response, next: NextFunctio
 };
 
 export const validateSearchQueryParamMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  if (req.query.query == null) {
-    req.query.query = '';
-  }
-  const { query } = req.query;
+  const { query = '' } = req.query;
   if (typeof query !== 'string') {
     res.status(400).json({ message: 'Invalid query search parameter. It must be a string.' });
   } else {
@@ -122,7 +119,7 @@ export const validatePropertyId = (req: Request, res: Response, next: NextFuncti
 
 export const validatePurposeFilter = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { purpose = '' } = req.query as { purpose: string };
+    const { purpose = 'For Sale' } = req.query as { purpose: string };
     const dbPurpose = await getPropertyPurpose();
     if (!dbPurpose.map(v => v.toLowerCase()).includes(purpose.toLowerCase())) {
       return res.status(400).json({ message: `Invalid purpose parameter. It must be one of following: ${dbPurpose.join(',')}.` });
