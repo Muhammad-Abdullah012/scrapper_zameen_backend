@@ -20,7 +20,18 @@ function createDbDumpStream() {
   const dumpStream = new PassThrough();
   const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   progressBar.start(100, 0);
-  const dumpProcess = spawn('sudo', ['docker', 'exec', '-t', 'my_postgres_container', 'pg_dumpall', '-c', '-U', 'zameen_scrapper_admin']);
+  const dumpProcess = spawn('sudo', [
+    'docker',
+    'exec',
+    '-t',
+    'my_postgres_container',
+    'pg_dump',
+    '-d',
+    'zameen_scrapper_db_node',
+    '-c',
+    '-U',
+    'zameen_scrapper_admin',
+  ]);
   let progress = 0;
   dumpProcess.stdout.on('data', () => {
     progress += 1;
