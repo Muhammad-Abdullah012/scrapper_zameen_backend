@@ -1,7 +1,10 @@
 import { Response } from 'express';
 import { PROPERTY_TYPE_CATEGORIES } from '@/constants';
 
-export const isInvalidNumber = (value: string): boolean => isNaN(Number(value)) || Number(value) < 0;
+export const isInvalidNumber = (value: string): boolean => {
+  const num = Number(value);
+  return isNaN(num) || num < 0 || !isFinite(num);
+};
 
 export const PROPERTY_CATEGORY_MAP: { [key in PROPERTY_TYPE_CATEGORIES]: string } = {
   [PROPERTY_TYPE_CATEGORIES.HOME]: ['house', 'upper_portion', 'lower_portion', 'flat', 'room', 'farm_house', 'penthouse'].join(','),
