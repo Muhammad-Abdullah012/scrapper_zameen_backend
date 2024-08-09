@@ -281,8 +281,17 @@ export class PropertyService {
       nest: false,
     });
   }
-  public async getBestProperties({ purpose, property_type, city, page_number, page_size, area_max, area_min }: IGetBestPropertiesProps) {
-    const whereClause = await this.getWhereClause({ purpose, property_type, city, area_max, area_min });
+  public async getBestProperties({
+    purpose,
+    property_type,
+    city,
+    page_number,
+    page_size,
+    area_max,
+    area_min,
+    location_ids,
+  }: IGetBestPropertiesProps) {
+    const whereClause = await this.getWhereClause({ purpose, property_type, city, area_max, area_min, location_ids });
     return (purpose === 'for_sale' ? RankedPropertyForSaleView : RankedPropertyForRentView).findAndCountAll({
       where: whereClause,
       order: [

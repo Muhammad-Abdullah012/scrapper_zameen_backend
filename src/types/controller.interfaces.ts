@@ -56,6 +56,7 @@ export interface IGetBestPropertiesQueryParams {
   area_max: string;
   page_size: string;
   page_number: string;
+  location_ids: string;
   property_type: PropertyType;
   purpose: PropertyPurposeType;
 }

@@ -64,6 +64,7 @@ export class PropertyRoute implements Routes {
       validateAreaFilter,
       validatePurposeFilter,
       validatePropertyTypeFilter,
+      validateSearchQueryParamMiddleware,
       validatePaginationParamsMiddleware,
       this.property.getBestProperties,
     );
@@ -73,6 +74,7 @@ export class PropertyRoute implements Routes {
       validateAreaFilter,
       validatePurposeFilter,
       validatePropertyTypeFilter,
+      validateSearchQueryParamMiddleware,
       validatePaginationParamsMiddleware,
       this.property.getBestProperties,
     );

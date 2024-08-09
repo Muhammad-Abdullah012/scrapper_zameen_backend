@@ -103,6 +103,7 @@ export interface IGetBestPropertiesProps {
   area_max?: string;
   page_size: number;
   page_number: number;
+  location_ids?: string;
   property_type?: PropertyType;
   purpose?: PropertyPurposeType;
 }
