@@ -2,10 +2,10 @@ name: Run Migrations
 
 on:
   push:
-    paths:
-      - 'src/migrations/**'
-    branches:
-      - test
+    # paths:
+    #   - 'src/migrations/**'
+    # branches:
+    #   - main
 
 jobs:
   deploy:
