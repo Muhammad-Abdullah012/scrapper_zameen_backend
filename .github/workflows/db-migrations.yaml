@@ -1,4 +1,4 @@
-name: Run tests
+name: Run Migrations
 
 on:
   push:
@@ -28,4 +28,4 @@ jobs:
           EC2_ENV_FILE: ${{ secrets.CODE_ENV_FILE }}
           NODE_ENV: production
         run: |
-          npx sequelize-cli db:migrate
+          npx sequelize-cli db:migrate --debug
