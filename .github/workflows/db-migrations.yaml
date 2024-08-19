@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - 'src/migrations/**'
-    # branches:
-    #   - main
+    branches:
+      - test
 
 jobs:
   deploy:
