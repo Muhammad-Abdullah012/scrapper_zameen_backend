@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const { object, string, array, number, boolean, date } = z;
+const { object, string, array, number, boolean, date, lazy } = z;
 
 const PropertyPurposeTypeEnum = z.enum(['for_sale', 'for_rent']);
 const PropertyTypeEnum = z.enum([
@@ -77,4 +77,10 @@ export const PropertyDetailResponseSchema = PropertySchema.extend({
   area_trends: object({}),
   external_id: string(),
   contact: object({}),
+});
+
+export const LocationHierarchySchema = object({
+  id: number(),
+  name: string(),
+  children: array(lazy(() => LocationHierarchySchema)),
 });

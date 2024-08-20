@@ -17,7 +17,7 @@ import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
 import { sequelize } from './config/sequelize';
-import { PropertyDetailResponseSchema, PropertyResponseSchema } from './models/property.schema';
+import { LocationHierarchySchema, PropertyDetailResponseSchema, PropertyResponseSchema } from './models/property.schema';
 import { RedisService } from './services/redis.service';
 
 export class App {
@@ -111,6 +111,7 @@ export class App {
           schemas: {
             Property: generateSchema(PropertyResponseSchema, undefined, '3.0'),
             PropertyDetails: generateSchema(PropertyDetailResponseSchema, undefined, '3.0'),
+            LocationHierarchy: generateSchema(LocationHierarchySchema, undefined, '3.0'),
           },
         },
         paths: {},
