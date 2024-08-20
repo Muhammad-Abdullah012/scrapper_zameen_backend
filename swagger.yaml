@@ -234,6 +234,11 @@ paths:
           description: Properties inserted until this date (exclusive). Date should be in ISO date string format.
           type: string
           default: ""
+        - name: purpose
+          in: query
+          description: purpose of property (for_sale or for_rent)
+          type: string
+          default: ""
       responses:
         200:
           description: A list of properties
@@ -623,6 +628,11 @@ paths:
           description: Location IDs
           type: string
           default: ''
+        - name: purpose
+          in: query
+          description: purpose of property (for_sale or for_rent)
+          type: string
+          default: ""
         - name: city
           in: path
           description: Name of the city to retrieve properties from
