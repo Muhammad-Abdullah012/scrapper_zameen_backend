@@ -25,7 +25,7 @@ import { splitAndTrimString } from '@/utils';
 export const ValidationMiddleware = (type: any, skipMissingProperties = false, whitelist = true, forbidNonWhitelisted = true) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const dto = plainToInstance(type, req.body);
-    validateOrReject(dto, { skipMissingProperties, whitelist, forbidNonWhitelisted })
+    return validateOrReject(dto, { skipMissingProperties, whitelist, forbidNonWhitelisted })
       .then(() => {
         req.body = dto;
         next();
@@ -44,7 +44,10 @@ export const validateCityParam = (req: Request, res: Response, next: NextFunctio
   if (city == null || Object.values(AVAILABLE_CITIES).includes(city as AVAILABLE_CITIES)) {
     next();
   } else {
-    returnBadRequestError({ res, message: `Invalid city parameter. It must be one of following: ${Object.values(AVAILABLE_CITIES).join(', ')}` });
+    return returnBadRequestError({
+      res,
+      message: `Invalid city parameter. It must be one of following: ${Object.values(AVAILABLE_CITIES).join(', ')}`,
+    });
   }
 };
 

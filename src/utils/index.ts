@@ -4,7 +4,10 @@ import Mail from 'nodemailer/lib/mailer';
 import { SENDER_EMAIL, SLACK_HOOK_URL } from '@/config';
 
 export const splitAndTrimString = (str: string = '', sep: string = ',') => {
-  return str.split(sep).map(s => s.trim());
+  return str
+    .split(sep)
+    .map(s => s.trim())
+    .filter(s => s.length);
 };
 
 export const getSendEmailPayload = ({ to, subject, html }: Mail.Options): Mail.Options => {
