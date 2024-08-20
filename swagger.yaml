@@ -234,6 +234,11 @@ paths:
           description: Properties inserted until this date (exclusive). Date should be in ISO date string format.
           type: string
           default: ""
+        - name: purpose
+          in: query
+          description: purpose of property (for_sale or for_rent)
+          type: string
+          default: ""
       responses:
         200:
           description: A list of properties
@@ -623,6 +628,11 @@ paths:
           description: Location IDs
           type: string
           default: ''
+        - name: purpose
+          in: query
+          description: purpose of property (for_sale or for_rent)
+          type: string
+          default: ""
         - name: city
           in: path
           description: Name of the city to retrieve properties from
@@ -722,6 +732,247 @@ paths:
                   message:
                     type: string
                     example: "search-properties"
+  /property/suggestions:
+    get:
+      tags:
+      - property
+      summary: Provide suggested locations
+      description: List of suggested locations based on user query
+      parameters:
+        - name: query
+          in: query
+          description: Search location 
+          type: string
+          default: ''
+      responses:
+        200:
+          description: A list of suggested locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "Bahria Town Karachi, Karachi, Sindh"
+                  message:
+                    type: string
+                    example: "auto-complete-locations"
+  /property/suggestions/{city}:
+    get:
+      tags:
+      - property
+      summary: Provide suggested locations
+      description: List of suggested locations based on user query
+      parameters:
+        - name: query
+          in: query
+          description: Search location 
+          type: string
+          default: ''
+        - name: city
+          in: path
+          description: Name of the city to retrieve suggestions for locations from
+          required: true
+          type: string
+      responses:
+        200:
+          description: A list of suggested locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "Bahria Town Karachi, Karachi, Sindh"
+                  message:
+                    type: string
+                    example: "auto-complete-locations"
+  /property/best:
+    get:
+      tags:
+      - property
+      summary: Provide best properties based on price
+      description: List of properties
+      parameters:
+        - name: location_ids
+          in: query
+          description: Location IDs
+          type: string
+          default: ''
+        - name: area_min
+          in: query
+          description: Minimum area in square feet
+          type: string
+          default: "0"
+        - name: area_max
+          in: query
+          description: Maximum area in square feet
+          type: string
+          default: ""
+        - name: purpose
+          in: query
+          description: purpose of property (for_sale or for_rent)
+          type: string
+          default: ""
+        - name: property_type
+          in: query
+          description: Property Type
+          type: string
+          default: ""
+        - name: page_size
+          in: query
+          description: Number of items per page
+          type: integer
+          default: 10
+        - name: page_number
+          in: query
+          description: Page number
+          type: integer
+          default: 1
+      responses:
+        200:
+          description: A list of properties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      page_number:
+                        type: string
+                        example: "1"
+                      page_size:
+                        type: string
+                        example: "10"
+                      total_count:
+                        type: string
+                        example: "5040"
+                      properties:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Property'
+                  message:
+                    type: string
+                    example: "best-properties"
+
+  /property/best/{city}:
+    get:
+      tags:
+      - property
+      summary: Provide best properties based on price
+      description: List of properties
+      parameters:
+        - name: location_ids
+          in: query
+          description: Location IDs
+          type: string
+          default: ''
+        - name: area_min
+          in: query
+          description: Minimum area in square feet
+          type: string
+          default: "0"
+        - name: area_max
+          in: query
+          description: Maximum area in square feet
+          type: string
+          default: ""
+        - name: purpose
+          in: query
+          description: purpose of property (for_sale or for_rent)
+          type: string
+          default: ""
+        - name: property_type
+          in: query
+          description: Property Type
+          type: string
+          default: ""
+        - name: page_size
+          in: query
+          description: Number of items per page
+          type: integer
+          default: 10
+        - name: page_number
+          in: query
+          description: Page number
+          type: integer
+          default: 1
+        - name: city
+          in: path
+          description: Name of the city to retrieve suggestions for locations from
+          required: true
+          type: string
+      responses:
+        200:
+          description: A list of properties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      page_number:
+                        type: string
+                        example: "1"
+                      page_size:
+                        type: string
+                        example: "10"
+                      total_count:
+                        type: string
+                        example: "5040"
+                      properties:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Property'
+                  message:
+                    type: string
+                    example: "best-properties"
+
+  /property/locations:
+    get:
+      tags:
+      - property
+      summary: Provide location hierarchy
+      description: List of nested locations
+      
+      responses:
+        200:
+          description: A list of locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LocationHierarchy'
+                  message:
+                    type: string
+                    example: "location-hierarchy"
+
 
 # definitions
 # definitions:

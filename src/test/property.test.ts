@@ -432,4 +432,60 @@ describe('Property', () => {
       expectInternalServerError(response);
     });
   });
+  describe('GET /property/best', () => {
+    const BASE_URL = '/best';
+    const data = {
+      rows: [{ id: 1, desc: 'description', header: 'Header', type: 'House', price: 95000000 } as any],
+      count: 1,
+    };
+    const responseBody = {
+      properties: [{ id: 1, desc: 'description', header: 'Header', type: 'House', price: 95000000 }],
+      total_count: 1,
+      page_number: '1',
+      page_size: '10',
+    };
+    it('Should return best properties', async () => {
+      propertyServiceMock.getBestProperties.mockResolvedValue(data);
+      const response = await requestUrl(BASE_URL).query(forSaleQuery);
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('message', 'best-properties');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toEqual(responseBody);
+    });
+    it('Should return error', async () => {
+      propertyServiceMock.getBestProperties.mockRejectedValue('Error');
+      const response = await requestUrl(BASE_URL).query(forSaleQuery);
+      expectInternalServerError(response);
+    });
+    it('Should return best properties in a city', async () => {
+      propertyServiceMock.getBestProperties.mockResolvedValue(data);
+      const response = await requestUrl(`${BASE_URL}/islamabad`).query(forSaleQuery);
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('message', 'best-properties');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toEqual(responseBody);
+    });
+  });
+
+  describe('GET /property/locations', () => {
+    const BASE_URL = '/locations';
+    it('Should return location hierarchy', async () => {
+      const testValue = {
+        id: 1,
+        name: 'test1',
+        children: [],
+      };
+      propertyServiceMock.getLocationHierarchy.mockResolvedValue([testValue]);
+      const response = await requestUrl(BASE_URL);
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('message', 'location-hierarchy');
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data).toEqual([testValue]);
+    });
+    it('Should return error', async () => {
+      propertyServiceMock.getLocationHierarchy.mockRejectedValue('Error');
+      const response = await requestUrl(BASE_URL);
+      expectInternalServerError(response);
+    });
+  });
 });
