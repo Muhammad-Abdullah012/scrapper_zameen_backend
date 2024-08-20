@@ -80,9 +80,10 @@ export const validateSearchFiltersMiddleware = async (req: Request, res: Respons
     }
   });
 
-  if (['all', 'studio'].includes(query.bedrooms.toString().toLowerCase())) {
-    query.bedrooms = '';
-  }
+  query.bedrooms = query.bedrooms
+    .toString()
+    .toLowerCase()
+    .replace(/all|studio/g, '');
 
   const { price_min, price_max, bedrooms, start_date, end_date } = query as unknown as IvalidateSearchFiltersMiddlewareQueryParams;
 
