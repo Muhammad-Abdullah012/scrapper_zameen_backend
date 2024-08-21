@@ -117,6 +117,11 @@ export interface ILocationHierarchy {
   name: string;
   children: ILocationHierarchy[];
 }
+
+export interface IPropertyCount {
+  type: string;
+  count: number;
+}
 // export interface IProperty {
 //   id: number;
 //   desc: string;

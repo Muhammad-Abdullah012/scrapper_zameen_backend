@@ -13,7 +13,17 @@ import {
   SORT_ORDER,
 } from '@/types';
 import axios, { AxiosResponse } from 'axios';
-import { City, Location, PropertiesModel, Property, AgencyModel, RankedPropertyForRentView, RankedPropertyForSaleView } from '@/models/models';
+import {
+  City,
+  Location,
+  PropertiesModel,
+  Property,
+  AgencyModel,
+  RankedPropertyForRentView,
+  RankedPropertyForSaleView,
+  CountPropertiesForSaleView,
+  CountPropertiesForRentView,
+} from '@/models/models';
 import { splitAndTrimString } from '@/utils';
 import { sequelize } from '@/config/sequelize';
 import { RedisService } from './redis.service';
@@ -151,30 +161,18 @@ export class PropertyService {
     }, {});
   }
   public async getPropertiesCountMap({
-    city,
-    location_ids,
-    area_min,
-    area_max,
-    price_min,
-    price_max,
-    bedrooms,
-    start_date,
-    end_date,
+    // city,
+    // location_ids,
+    // area_min,
+    // area_max,
+    // price_min,
+    // price_max,
+    // bedrooms,
+    // start_date,
+    // end_date,
     purpose,
   }: IGetPropertiesCountMapProps) {
-    const whereClause = await this.getWhereClause({
-      city,
-      location_ids,
-      area_min,
-      area_max,
-      price_min,
-      price_max,
-      bedrooms,
-      start_date,
-      end_date,
-      purpose,
-    });
-    return this.getCountMap(whereClause);
+    return (purpose === 'for_sale' ? CountPropertiesForSaleView : CountPropertiesForRentView).findAll({ attributes: ['type', 'count'] });
   }
   public async getLocationId(location: string): Promise<number[]> {
     if (!location) return null;

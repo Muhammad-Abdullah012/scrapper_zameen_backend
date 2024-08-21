@@ -58,7 +58,16 @@ export class PropertyController {
         end_date,
         purpose,
       });
-      res.status(200).json({ data: propertyCount, message: 'count' });
+
+      const propertyCountMap = propertyCount.reduce((acc, item: any) => {
+        acc[item.type as string] = item.count;
+        return acc;
+      }, {});
+
+      res.status(200).json({
+        data: propertyCountMap,
+        message: 'count',
+      });
     } catch (error) {
       next(error);
     }
