@@ -8,4 +8,7 @@ export const sequelize = new Sequelize({
   password: POSTGRES_PASSWORD,
   port: POSTGRES_PORT,
   host: POSTGRES_HOST,
+  pool: {
+    max: 5,
+  },
 });
