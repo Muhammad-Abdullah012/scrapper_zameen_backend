@@ -9,6 +9,9 @@ export const sequelize = new Sequelize({
   port: POSTGRES_PORT,
   host: POSTGRES_HOST,
   pool: {
+    min: 0,
     max: 5,
+    idle: 50000,
+    acquire: 100000,
   },
 });
