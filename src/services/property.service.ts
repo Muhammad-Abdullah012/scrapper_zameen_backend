@@ -1,8 +1,9 @@
 import Container, { Service } from 'typedi';
 import { FindAttributeOptions, Includeable, InferAttributes, Op, QueryTypes, WhereOptions, col, fn } from 'sequelize';
-import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL } from '@config/index';
+import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL, FEATURED_PROPERTY_PRICE_THRESHOLD } from '@config/index';
 import {
   AVAILABLE_CITIES,
+  IFeaturedPropertiesProps,
   IFindAllPropertiesProps,
   IGetBestPropertiesProps,
   IGetPropertiesCountMapProps,
@@ -13,7 +14,16 @@ import {
   SORT_ORDER,
 } from '@/types';
 import axios, { AxiosResponse } from 'axios';
-import { City, Location, PropertiesModel, Property, AgencyModel, RankedPropertyForRentView, RankedPropertyForSaleView } from '@/models/models';
+import {
+  City,
+  Location,
+  PropertiesModel,
+  Property,
+  AgencyModel,
+  RankedPropertyForRentView,
+  RankedPropertyForSaleView,
+  CountPropertiesView,
+} from '@/models/models';
 import { splitAndTrimString } from '@/utils';
 import { sequelize } from '@/config/sequelize';
 import { RedisService } from './redis.service';
@@ -151,30 +161,18 @@ export class PropertyService {
     }, {});
   }
   public async getPropertiesCountMap({
-    city,
-    location_ids,
-    area_min,
-    area_max,
-    price_min,
-    price_max,
-    bedrooms,
-    start_date,
-    end_date,
+    // city,
+    // location_ids,
+    // area_min,
+    // area_max,
+    // price_min,
+    // price_max,
+    // bedrooms,
+    // start_date,
+    // end_date,
     purpose,
   }: IGetPropertiesCountMapProps) {
-    const whereClause = await this.getWhereClause({
-      city,
-      location_ids,
-      area_min,
-      area_max,
-      price_min,
-      price_max,
-      bedrooms,
-      start_date,
-      end_date,
-      purpose,
-    });
-    return this.getCountMap(whereClause);
+    return CountPropertiesView.findAll({ attributes: ['type', 'count'], where: { purpose } });
   }
   public async getLocationId(location: string): Promise<number[]> {
     if (!location) return null;
@@ -308,6 +306,23 @@ export class PropertyService {
       include: this.includeModelsInQuery(),
       attributes: this.selectAttributes(['rank']),
       raw: true,
+    });
+  }
+
+  public getFeaturedProperties({
+    purpose,
+    page_size = 10,
+    page_number,
+    sorting_order = [[SORT_COLUMNS.ID, SORT_ORDER.ASC]],
+  }: IFeaturedPropertiesProps) {
+    // Featured properties are those Top properties with price >= FEATURED_PROPERTY_PRICE_THRESHOLD
+    return (purpose == 'for_sale' ? RankedPropertyForSaleView : RankedPropertyForRentView).findAndCountAll({
+      where: {
+        price: { [Op.gte]: FEATURED_PROPERTY_PRICE_THRESHOLD },
+      },
+      offset: (page_number - 1) * page_size,
+      limit: page_size,
+      order: sorting_order,
     });
   }
 

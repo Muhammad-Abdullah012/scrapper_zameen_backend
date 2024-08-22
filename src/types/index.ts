@@ -50,6 +50,12 @@ export interface ISearchPropertiesProps {
   purpose?: string;
 }
 
+export interface IFeaturedPropertiesProps {
+  purpose?: string;
+  page_size?: number;
+  page_number: number;
+  sorting_order?: SortingOrder;
+}
 export interface IGetPropertiesCountMapProps {
   city?: string;
   location_ids: string;
@@ -116,6 +122,11 @@ export interface ILocationHierarchy {
   id: number;
   name: string;
   children: ILocationHierarchy[];
+}
+
+export interface IPropertyCount {
+  type: string;
+  count: number;
 }
 // export interface IProperty {
 //   id: number;

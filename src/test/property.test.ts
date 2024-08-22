@@ -133,12 +133,15 @@ describe('Property', () => {
   describe('GET /property/count', () => {
     const BASE_URL = '/count';
     it('should retrieve the total count of properties', async () => {
-      propertyServiceMock.getPropertiesCountMap.mockResolvedValue({
-        'Agricultural Land': 76,
-        Building: 2618,
-        'Commercial Plot': 2768,
-        Factory: 558,
-      });
+      propertyServiceMock.getPropertiesCountMap.mockResolvedValue(
+        Promise.resolve([
+          { type: 'Agricultural Land', count: 76 },
+          { type: 'Building', count: 2618 },
+          { type: 'Commercial Plot', count: 2768 },
+          { type: 'Factory', count: 558 },
+        ]) as any,
+      );
+
       const response = await requestUrl(BASE_URL).query(forSaleQuery);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
@@ -146,12 +149,14 @@ describe('Property', () => {
       expect(response.body).toHaveProperty('message');
     });
     it('should retrieve the total count of properties', async () => {
-      propertyServiceMock.getPropertiesCountMap.mockResolvedValue({
-        'Agricultural Land': 76,
-        Building: 2618,
-        'Commercial Plot': 2768,
-        Factory: 558,
-      });
+      propertyServiceMock.getPropertiesCountMap.mockResolvedValue(
+        Promise.resolve([
+          { type: 'Agricultural Land', count: 76 },
+          { type: 'Building', count: 2618 },
+          { type: 'Commercial Plot', count: 2768 },
+          { type: 'Factory', count: 558 },
+        ]) as any,
+      );
       const response = await requestUrl(`${BASE_URL}/islamabad`).query(forSaleQuery);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('data');
@@ -372,7 +377,7 @@ describe('Property', () => {
   describe('GET /property/featured', () => {
     const BASE_URL = '/featured';
     it('Should return featured properties', async () => {
-      mockSearchProperties();
+      propertyServiceMock.getFeaturedProperties.mockReturnValue(Promise.resolve(getMockPropertiesData()));
       const response = await requestUrl(BASE_URL).query(forSaleQuery);
       expect(response.status).toBe(200);
       expect(response.body.data).toBeInstanceOf(Object);
@@ -381,7 +386,7 @@ describe('Property', () => {
       expect(response.body.data).toHaveProperty('total_count');
     });
     it('Should return error', async () => {
-      propertyServiceMock.searchProperties.mockRejectedValue('Error');
+      propertyServiceMock.getFeaturedProperties.mockRejectedValue('Error');
       const response = await requestUrl(BASE_URL).query(forSaleQuery);
       expectInternalServerError(response);
     });
