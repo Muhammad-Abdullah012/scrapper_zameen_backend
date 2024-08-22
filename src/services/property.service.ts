@@ -214,12 +214,14 @@ export class PropertyService {
     return {
       purpose,
       price: { [Op.gt]: 0 },
-      agency_id: {
-        [is_posted_by_agency ? Op.ne : Op.eq]: null,
-      },
       ...(property_type && { type: { [Op.in]: propertyTypesArray } }),
       ...(location_ids && { location_id: { [Op.in]: locationIds } }),
       ...(city && { city_id: cityId }),
+      ...(is_posted_by_agency != null && {
+        agency_id: {
+          [is_posted_by_agency ? Op.ne : Op.eq]: null,
+        },
+      }),
       ...((area_min || area_max) && { area: { ...(area_min && { [Op.gte]: area_min }), ...(area_max && { [Op.lte]: area_max }) } }),
       ...((price_min || price_max) && { price: { ...(price_min && { [Op.gte]: price_min }), ...(price_max && { [Op.lte]: price_max }) } }),
       ...(bedrooms && { bedroom: { [Op.in]: bedroomsArray } }),

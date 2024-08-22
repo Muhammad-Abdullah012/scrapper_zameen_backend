@@ -11,7 +11,7 @@ export const sequelize = new Sequelize({
   pool: {
     min: 0,
     max: 5,
-    idle: 10000,
+    idle: 1000,
     acquire: 100000,
   },
 });
