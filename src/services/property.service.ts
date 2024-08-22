@@ -22,8 +22,7 @@ import {
   AgencyModel,
   RankedPropertyForRentView,
   RankedPropertyForSaleView,
-  CountPropertiesForSaleView,
-  CountPropertiesForRentView,
+  CountPropertiesView,
   FeaturedPropertiesForSaleView,
 } from '@/models/models';
 import { splitAndTrimString } from '@/utils';
@@ -174,7 +173,7 @@ export class PropertyService {
     // end_date,
     purpose,
   }: IGetPropertiesCountMapProps) {
-    return (purpose === 'for_sale' ? CountPropertiesForSaleView : CountPropertiesForRentView).findAll({ attributes: ['type', 'count'] });
+    return CountPropertiesView.findAll({ attributes: ['type', 'count'], where: { purpose } });
   }
   public async getLocationId(location: string): Promise<number[]> {
     if (!location) return null;

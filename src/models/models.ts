@@ -385,16 +385,10 @@ AgencyModel.hasMany(RankedPropertyForRentView, { foreignKey: 'agency_id' });
 RankedPropertyForSaleView.belongsTo(AgencyModel, { foreignKey: 'agency_id' });
 AgencyModel.hasMany(RankedPropertyForSaleView, { foreignKey: 'agency_id' });
 
-export class CountPropertiesForSaleView extends Model {}
-CountPropertiesForSaleView.init(
-  { type: { type: DataTypes.TEXT }, count: { type: DataTypes.INTEGER } },
-  { sequelize, tableName: 'countpropertiesforsaleview', timestamps: false, underscored: true },
-);
-
-export class CountPropertiesForRentView extends Model {}
-CountPropertiesForRentView.init(
-  { type: { type: DataTypes.TEXT }, count: { type: DataTypes.INTEGER } },
-  { sequelize, tableName: 'countpropertiesforrentview', timestamps: false, underscored: true },
+export class CountPropertiesView extends Model {}
+CountPropertiesView.init(
+  { type: { type: DataTypes.TEXT }, count: { type: DataTypes.INTEGER }, purpose: { type: DataTypes.TEXT } },
+  { sequelize, tableName: 'countpropertiesview', timestamps: false, underscored: true },
 );
 
 export class FeaturedPropertiesForSaleView extends Model {}
