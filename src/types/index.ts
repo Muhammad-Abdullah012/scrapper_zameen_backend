@@ -51,8 +51,9 @@ export interface ISearchPropertiesProps {
 }
 
 export interface IFeaturedPropertiesProps {
-  page_number: number;
+  purpose?: string;
   page_size?: number;
+  page_number: number;
   sorting_order?: SortingOrder;
 }
 export interface IGetPropertiesCountMapProps {
