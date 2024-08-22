@@ -219,7 +219,7 @@ export class PropertyService {
       ...(city && { city_id: cityId }),
       ...(is_posted_by_agency != null && {
         agency_id: {
-          [is_posted_by_agency ? Op.ne : Op.eq]: null,
+          [is_posted_by_agency === 'true' ? Op.ne : Op.eq]: null,
         },
       }),
       ...((area_min || area_max) && { area: { ...(area_min && { [Op.gte]: area_min }), ...(area_max && { [Op.lte]: area_max }) } }),

@@ -103,7 +103,7 @@ export class PropertyController {
         location_ids,
         page_number: Number(page_number),
         page_size: Number(page_size),
-        is_posted_by_agency: is_posted_by_agency === 'true',
+        is_posted_by_agency,
         sorting_order: order,
         property_type,
         area_min,
