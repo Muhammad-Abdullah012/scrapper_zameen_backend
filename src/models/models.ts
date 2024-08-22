@@ -402,7 +402,7 @@ FeaturedPropertiesForSaleView.init(
   { ...Property.getAttributes() },
   {
     sequelize,
-    tableName: 'featuredpropertiesforsaleview',
+    tableName: 'featuredpropertiesview',
     timestamps: false,
     underscored: true,
   },

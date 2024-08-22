@@ -377,7 +377,7 @@ describe('Property', () => {
   describe('GET /property/featured', () => {
     const BASE_URL = '/featured';
     it('Should return featured properties', async () => {
-      mockSearchProperties();
+      propertyServiceMock.getFeaturedProperties.mockReturnValue(Promise.resolve(getMockPropertiesData()));
       const response = await requestUrl(BASE_URL).query(forSaleQuery);
       expect(response.status).toBe(200);
       expect(response.body.data).toBeInstanceOf(Object);
@@ -386,7 +386,7 @@ describe('Property', () => {
       expect(response.body.data).toHaveProperty('total_count');
     });
     it('Should return error', async () => {
-      propertyServiceMock.searchProperties.mockRejectedValue('Error');
+      propertyServiceMock.getFeaturedProperties.mockRejectedValue('Error');
       const response = await requestUrl(BASE_URL).query(forSaleQuery);
       expectInternalServerError(response);
     });

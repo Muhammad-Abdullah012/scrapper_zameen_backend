@@ -3,6 +3,7 @@ import { FindAttributeOptions, Includeable, InferAttributes, Op, QueryTypes, Whe
 import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL } from '@config/index';
 import {
   AVAILABLE_CITIES,
+  IFeaturedPropertiesProps,
   IFindAllPropertiesProps,
   IGetBestPropertiesProps,
   IGetPropertiesCountMapProps,
@@ -23,6 +24,7 @@ import {
   RankedPropertyForSaleView,
   CountPropertiesForSaleView,
   CountPropertiesForRentView,
+  FeaturedPropertiesForSaleView,
 } from '@/models/models';
 import { splitAndTrimString } from '@/utils';
 import { sequelize } from '@/config/sequelize';
@@ -307,6 +309,10 @@ export class PropertyService {
       attributes: this.selectAttributes(['rank']),
       raw: true,
     });
+  }
+
+  public getFeaturedProperties({ page_size = 10, page_number, sorting_order = [[SORT_COLUMNS.ID, SORT_ORDER.ASC]] }: IFeaturedPropertiesProps) {
+    return FeaturedPropertiesForSaleView.findAndCountAll({ offset: (page_number - 1) * page_size, limit: page_size, order: sorting_order });
   }
 
   public async getLocationHierarchy() {
