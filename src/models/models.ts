@@ -390,14 +390,3 @@ CountPropertiesView.init(
   { type: { type: DataTypes.TEXT }, count: { type: DataTypes.INTEGER }, purpose: { type: DataTypes.TEXT } },
   { sequelize, tableName: 'countpropertiesview', timestamps: false, underscored: true },
 );
-
-export class FeaturedPropertiesForSaleView extends Model {}
-FeaturedPropertiesForSaleView.init(
-  { ...Property.getAttributes() },
-  {
-    sequelize,
-    tableName: 'featuredpropertiesview',
-    timestamps: false,
-    underscored: true,
-  },
-);

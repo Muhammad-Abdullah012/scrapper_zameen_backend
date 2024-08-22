@@ -126,11 +126,12 @@ export class PropertyController {
   };
   public getFeaturedProperties = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { page_number, page_size } = req.query as unknown as IGetFeaturedPropertiesQueryParams;
+      const { page_number, page_size, purpose } = req.query as unknown as IGetFeaturedPropertiesQueryParams;
       const { rows: properties, count: total_count } = await this.property.getFeaturedProperties({
-        page_number: Number(page_number),
+        purpose,
         page_size: Number(page_size),
-        sorting_order: [[SORT_COLUMNS.PRICE, SORT_ORDER.ASC]],
+        page_number: Number(page_number),
+        sorting_order: [[SORT_COLUMNS.PRICE, SORT_ORDER.DESC]],
       });
       res.status(200).json({ data: { properties, total_count, page_number, page_size }, message: 'featured-properties' });
     } catch (error) {

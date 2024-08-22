@@ -1,6 +1,6 @@
 import Container, { Service } from 'typedi';
 import { FindAttributeOptions, Includeable, InferAttributes, Op, QueryTypes, WhereOptions, col, fn } from 'sequelize';
-import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL } from '@config/index';
+import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL, FEATURED_PROPERTY_PRICE_THRESHOLD } from '@config/index';
 import {
   AVAILABLE_CITIES,
   IFeaturedPropertiesProps,
@@ -23,7 +23,6 @@ import {
   RankedPropertyForRentView,
   RankedPropertyForSaleView,
   CountPropertiesView,
-  FeaturedPropertiesForSaleView,
 } from '@/models/models';
 import { splitAndTrimString } from '@/utils';
 import { sequelize } from '@/config/sequelize';
@@ -310,8 +309,21 @@ export class PropertyService {
     });
   }
 
-  public getFeaturedProperties({ page_size = 10, page_number, sorting_order = [[SORT_COLUMNS.ID, SORT_ORDER.ASC]] }: IFeaturedPropertiesProps) {
-    return FeaturedPropertiesForSaleView.findAndCountAll({ offset: (page_number - 1) * page_size, limit: page_size, order: sorting_order });
+  public getFeaturedProperties({
+    purpose,
+    page_size = 10,
+    page_number,
+    sorting_order = [[SORT_COLUMNS.ID, SORT_ORDER.ASC]],
+  }: IFeaturedPropertiesProps) {
+    // Featured properties are those Top properties with price >= FEATURED_PROPERTY_PRICE_THRESHOLD
+    return (purpose == 'for_sale' ? RankedPropertyForSaleView : RankedPropertyForRentView).findAndCountAll({
+      where: {
+        price: { [Op.gte]: FEATURED_PROPERTY_PRICE_THRESHOLD },
+      },
+      offset: (page_number - 1) * page_size,
+      limit: page_size,
+      order: sorting_order,
+    });
   }
 
   public async getLocationHierarchy() {
