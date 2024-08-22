@@ -217,7 +217,7 @@ export class PropertyService {
       ...(property_type && { type: { [Op.in]: propertyTypesArray } }),
       ...(location_ids && { location_id: { [Op.in]: locationIds } }),
       ...(city && { city_id: cityId }),
-      ...(is_posted_by_agency != null && {
+      ...(is_posted_by_agency && {
         agency_id: {
           [is_posted_by_agency === 'true' ? Op.ne : Op.eq]: null,
         },
