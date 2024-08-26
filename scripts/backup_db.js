@@ -2,8 +2,9 @@ const { spawn } = require('child_process');
 const { google } = require('googleapis');
 const { JWT } = require('google-auth-library');
 const { PassThrough } = require('stream');
+const { resolve } = require('path');
 const cliProgress = require('cli-progress');
-require('dotenv').config({ path: '.env.production.local' });
+require('dotenv').config({ path: resolve(__dirname, '..', '.env.production.local') });
 
 const { DB_BACKUP_FOLDER_ID, POSTGRES_USER, POSTGRES_DB } = process.env;
 const credentials = require('../credentials/credentials.json');
