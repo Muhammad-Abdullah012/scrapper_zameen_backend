@@ -25,10 +25,12 @@ module.exports = {
       url: {
         type: DataTypes.TEXT,
         allowNull: false,
+        unique: true,
       },
       external_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        unique: true,
       },
       created_at: {
         type: DataTypes.DATE,
