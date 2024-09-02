@@ -91,7 +91,7 @@ export const validateSearchFiltersMiddleware = async (req: Request, res: Respons
     case isInvalidNumber(price_min):
     case price_max && isInvalidNumber(price_max):
       return returnBadRequestError({ res, message: 'Invalid price parameters. Both price_min and price_max must be valid numbers.' });
-    case bedrooms && splitAndTrimString(bedrooms).some(isInvalidNumber):
+    case bedrooms && splitAndTrimString(bedrooms).some(bedroom => isInvalidNumber(bedroom, 1)):
       return returnBadRequestError({ res, message: 'Invalid bedrooms parameter. It must be a valid number.' });
     case start_date && isNaN(Date.parse(start_date)):
       return returnBadRequestError({ res, message: 'Invalid start_date parameter. It must be a valid date in iso string format.' });

@@ -6,9 +6,9 @@ import {
   PROPERTY_TYPE_COMMERCIAL_CATEGORIES,
 } from '@/constants';
 
-export const isInvalidNumber = (value: string): boolean => {
+export const isInvalidNumber = (value: string, min_valid_value: number = 0): boolean => {
   const num = Number(value);
-  return isNaN(num) || num < 0 || !isFinite(num);
+  return isNaN(num) || num < min_valid_value || !isFinite(num);
 };
 
 export const PROPERTY_CATEGORY_MAP: { [key in PROPERTY_TYPE_CATEGORIES]: string } = {

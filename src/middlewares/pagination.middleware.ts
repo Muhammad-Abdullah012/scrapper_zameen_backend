@@ -10,7 +10,7 @@ export const validatePaginationParamsMiddleware = (req: Request, res: Response, 
   query.page_size = query.page_size || '10';
   query.page_number = query.page_number || '1';
   const { page_size, page_number } = query as unknown as IvalidatePaginationParamsMiddlewareQueryParams;
-  if (isInvalidNumber(page_number) || isInvalidNumber(page_size)) {
+  if (isInvalidNumber(page_number, 1) || isInvalidNumber(page_size, 1)) {
     return returnBadRequestError({ res, message: 'Invalid pagination parameters. Both page_size and page_number must be valid numbers.' });
   }
   next();
