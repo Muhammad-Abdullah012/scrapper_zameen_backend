@@ -135,26 +135,11 @@ module.exports = {
     await queryInterface.sequelize.query(`
       COMMENT ON COLUMN ${TABLE_NAME}.area IS 'Area is in square feet';
     `);
-    await queryInterface.addIndex(TABLE_NAME, ['price']);
-    await queryInterface.addIndex(TABLE_NAME, ['bath']);
-    await queryInterface.addIndex(TABLE_NAME, ['bedroom']);
-    await queryInterface.addIndex(TABLE_NAME, ['area']);
-    await queryInterface.addIndex(TABLE_NAME, ['type']);
-    await queryInterface.addIndex(TABLE_NAME, ['purpose']);
-    await queryInterface.addIndex(TABLE_NAME, ['added']);
     await queryInterface.addIndex(TABLE_NAME, ['location_id']);
+    await queryInterface.addIndex(TABLE_NAME, ['agency_id']);
     await queryInterface.addIndex(TABLE_NAME, ['city_id']);
   },
   async down(queryInterface, _Sequelize) {
-    await queryInterface.removeIndex(TABLE_NAME, ['city_id']);
-    await queryInterface.removeIndex(TABLE_NAME, ['location_id']);
-    await queryInterface.removeIndex(TABLE_NAME, ['added']);
-    await queryInterface.removeIndex(TABLE_NAME, ['purpose']);
-    await queryInterface.removeIndex(TABLE_NAME, ['type']);
-    await queryInterface.removeIndex(TABLE_NAME, ['area']);
-    await queryInterface.removeIndex(TABLE_NAME, ['bedroom']);
-    await queryInterface.removeIndex(TABLE_NAME, ['bath']);
-    await queryInterface.removeIndex(TABLE_NAME, ['price']);
     await queryInterface.dropTable(TABLE_NAME);
   },
 };
