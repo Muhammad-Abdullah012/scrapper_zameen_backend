@@ -15,6 +15,7 @@ module.exports = {
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
     });
+    await queryInterface.addIndex(PROPERTIES_TABLE, ['agency_id']);
   },
 
   async down(queryInterface, _Sequelize) {

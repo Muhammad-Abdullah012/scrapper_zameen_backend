@@ -136,7 +136,6 @@ module.exports = {
       COMMENT ON COLUMN ${TABLE_NAME}.area IS 'Area is in square feet';
     `);
     await queryInterface.addIndex(TABLE_NAME, ['location_id']);
-    await queryInterface.addIndex(TABLE_NAME, ['agency_id']);
     await queryInterface.addIndex(TABLE_NAME, ['city_id']);
   },
   async down(queryInterface, _Sequelize) {
