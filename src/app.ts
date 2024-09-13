@@ -6,25 +6,20 @@ import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
-import { Container } from 'typedi';
-import session from 'express-session';
-import RedisStore from 'connect-redis';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { generateSchema } from '@anatine/zod-openapi';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, SESSION_SECRET_KEY } from '@config/index';
+import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config/index';
 import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
 import { sequelize } from './config/sequelize';
 import { LocationHierarchySchema, PropertyDetailResponseSchema, PropertyResponseSchema } from './models/property.schema';
-import { RedisService } from './services/redis.service';
 
 export class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
-  private redis = Container.get(RedisService);
 
   constructor(routes: Routes[]) {
     this.app = express();
@@ -71,14 +66,6 @@ export class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
-    this.app.use(
-      session({
-        store: new RedisStore({ client: this.redis.getRedisClient() }),
-        secret: SESSION_SECRET_KEY,
-        resave: false,
-        saveUninitialized: false,
-      }),
-    );
   }
 
   private initializeRoutes(routes: Routes[]) {

@@ -1,4 +1,4 @@
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 import { FindAttributeOptions, Includeable, InferAttributes, Op, QueryTypes, WhereOptions, col, fn } from 'sequelize';
 import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL, FEATURED_PROPERTY_PRICE_THRESHOLD } from '@config/index';
 import {
@@ -26,11 +26,9 @@ import {
 } from '@/models/models';
 import { splitAndTrimString } from '@/utils';
 import { sequelize } from '@/config/sequelize';
-import { RedisService } from './redis.service';
 
 @Service()
 export class PropertyService {
-  private redis = Container.get(RedisService);
   private async findCityId(city: string): Promise<number | null> {
     if (!city) return null;
 
