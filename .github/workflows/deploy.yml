@@ -34,7 +34,7 @@ jobs:
           PRIV_KEY_CERTIFICATE_PEM_FILE: ${{ secrets.PRIV_KEY_CERTIFICATE_PEM_FILE }}
         run: |
           ssh -i ec2_private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "mkdir -p $REPO_NAME"
-          rsync -avz --exclude='.git/' --exclude='ec2_private_key.pem' --exclude='node_modules/' -e 'ssh -i ec2_private_key.pem -o StrictHostKeyChecking=no' $(pwd)/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/$REPO_NAME
+          sudo rsync -avz --exclude='.git/' --exclude='ec2_private_key.pem' --exclude='node_modules/' -e 'ssh -i ec2_private_key.pem -o StrictHostKeyChecking=no' $(pwd)/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/$REPO_NAME
           ssh -i ec2_private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "cd $REPO_NAME && mkdir -p certs && cd certs && echo \"$FULL_CHAIN_CERTIFICATE_PEM_FILE\" > fullchain.pem && echo \"$PRIV_KEY_CERTIFICATE_PEM_FILE\" > privkey.pem && chmod 644 fullchain.pem && chmod 600 privkey.pem"
           ssh -i ec2_private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "cd $REPO_NAME && mkdir -p credentials && cd credentials && echo '${{ secrets.SERVICE_ACCOUNT_KEY_JSON_BASE64_ENCODED }}' | base64 --decode > credentials.json"
       - name: Deploy to EC2
