@@ -6,6 +6,7 @@ import {
   IFeaturedPropertiesProps,
   IFindAllPropertiesProps,
   IGetBestPropertiesProps,
+  IgetMaxPriceChangePercentageLastYear,
   IGetPropertiesCountMapProps,
   IGetWhereClauseProps,
   ILocationHierarchy,
@@ -371,10 +372,11 @@ export class PropertyService {
     }));
   }
 
-  public async getMaxPriceChangePercentageLastYear(city: string, limit: number, year_count: number) {
+  public async getMaxPriceChangePercentageLastYear({ city, limit, year_count, purpose }: IgetMaxPriceChangePercentageLastYear) {
     const column = `percentage_change_${year_count}_year${year_count > 1 ? 's' : ''}`;
     return TimeSeriesData.findAll({
       where: {
+        purpose,
         city: {
           [Op.iLike]: city,
         },

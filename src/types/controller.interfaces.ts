@@ -61,3 +61,9 @@ export interface IGetBestPropertiesQueryParams {
   property_type: PropertyType;
   purpose: PropertyPurposeType;
 }
+
+export interface IgetMaxPriceChangePercentageLastYearQueryParams {
+  limit: number;
+  year_count: number;
+  purpose: string;
+}

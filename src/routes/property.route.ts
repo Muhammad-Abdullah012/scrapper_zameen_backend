@@ -112,6 +112,7 @@ export class PropertyRoute implements Routes {
       `${this.path}/price-change-percentage/:city`,
       validateCityParam,
       validateLimitFilter,
+      validatePurposeFilter,
       validateYearCountFilter,
       this.property.getMaxPriceChangePercentageLastYear,
     );

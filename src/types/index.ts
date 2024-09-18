@@ -128,6 +128,13 @@ export interface IPropertyCount {
   type: string;
   count: number;
 }
+
+export interface IgetMaxPriceChangePercentageLastYear {
+  city: string;
+  limit: number;
+  year_count: number;
+  purpose: string;
+}
 // export interface IProperty {
 //   id: number;
 //   desc: string;
