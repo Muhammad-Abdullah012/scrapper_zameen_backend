@@ -196,10 +196,16 @@ export class PropertyController {
   public getMaxPriceChangePercentageLastYear = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { query, params } = req;
-      const { limit, year_count, purpose } = query as unknown as IgetMaxPriceChangePercentageLastYearQueryParams;
+      const { limit, year_count, purpose, property_type } = query as unknown as IgetMaxPriceChangePercentageLastYearQueryParams;
       const { city } = params;
 
-      const result = await this.property.getMaxPriceChangePercentageLastYear({ city, limit: Number(limit), year_count: Number(year_count), purpose });
+      const result = await this.property.getMaxPriceChangePercentageLastYear({
+        city,
+        purpose,
+        property_type,
+        limit: Number(limit),
+        year_count: Number(year_count),
+      });
       res.json({ data: result, message: `max-price-change-percentage-last-${year_count}-year` });
     } catch (err) {
       next(err);
