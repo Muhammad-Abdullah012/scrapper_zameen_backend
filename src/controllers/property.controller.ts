@@ -191,4 +191,16 @@ export class PropertyController {
       next(err);
     }
   };
+
+  public getMaxPriceChangePercentageLastYear = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { query, params } = req;
+      const { limit, year_count } = query as { limit: string; year_count: string };
+
+      const result = await this.property.getMaxPriceChangePercentageLastYear(params.city, Number(limit), Number(year_count));
+      res.json({ data: result, message: `max-price-change-percentage-last-${year_count}-year` });
+    } catch (err) {
+      next(err);
+    }
+  };
 }

@@ -23,6 +23,7 @@ import {
   RankedPropertyForRentView,
   RankedPropertyForSaleView,
   CountPropertiesView,
+  TimeSeriesData,
 } from '@/models/models';
 import { splitAndTrimString } from '@/utils';
 import { sequelize } from '@/config/sequelize';
@@ -368,5 +369,22 @@ export class PropertyService {
       name: node.name,
       children: this.convertMapToHierarchy(new Map(node.children.map(child => [child.name, child]))),
     }));
+  }
+
+  public async getMaxPriceChangePercentageLastYear(city: string, limit: number, year_count: number) {
+    const column = `percentage_change_${year_count}_year${year_count > 1 ? 's' : ''}`;
+    return TimeSeriesData.findAll({
+      where: {
+        city: {
+          [Op.iLike]: city,
+        },
+        [column]: {
+          [Op.ne]: null,
+        },
+      },
+      limit,
+      order: [[column, 'DESC']],
+      raw: true,
+    });
   }
 }

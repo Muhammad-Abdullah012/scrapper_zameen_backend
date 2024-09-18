@@ -10,6 +10,8 @@ import {
   validatePropertyTypeFilter,
   validateAreaFilter,
   validateIsPostedByAgencyFilter,
+  validateLimitFilter,
+  validateYearCountFilter,
 } from '@/middlewares/validation.middleware';
 import { validatePaginationParamsMiddleware, validateSortParamsMiddleware } from '@/middlewares/pagination.middleware';
 
@@ -105,6 +107,13 @@ export class PropertyRoute implements Routes {
       validatePurposeFilter,
       validateAreaFilter,
       this.property.searchProperties,
+    );
+    this.router.get(
+      `${this.path}/price-change-percentage/:city`,
+      validateCityParam,
+      validateLimitFilter,
+      validateYearCountFilter,
+      this.property.getMaxPriceChangePercentageLastYear,
     );
     this.router.get(
       `${this.path}/:city`,
