@@ -63,7 +63,7 @@ export interface IGetBestPropertiesQueryParams {
 }
 
 export interface IgetMaxPriceChangePercentageLastYearQueryParams {
-  area: string;
+  area?: string;
   limit: number;
   purpose: string;
   year_count: number;

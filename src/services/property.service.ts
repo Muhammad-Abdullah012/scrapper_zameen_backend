@@ -378,7 +378,6 @@ export class PropertyService {
 
     return TimeSeriesData.findAll({
       where: {
-        area,
         purpose,
         [column]: {
           [Op.ne]: null,
@@ -386,6 +385,7 @@ export class PropertyService {
         city: {
           [Op.iLike]: city,
         },
+        ...(area && { area }),
         ...(property_type && { type: { [Op.in]: propertyTypesArray } }),
       },
       limit,

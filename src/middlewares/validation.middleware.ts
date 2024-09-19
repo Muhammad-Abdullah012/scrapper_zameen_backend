@@ -232,9 +232,8 @@ export const validateYearCountFilter = (req: Request, res: Response, next: NextF
 export const validateExactAreaFilter = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { query } = req;
-    query.area = query.area || '1';
     const { area } = query as { area: string };
-    if (isInvalidNumber(area, 1)) {
+    if (area && isInvalidNumber(area, 1)) {
       return returnBadRequestError({ res, message: 'Invalid area parameter. It must be a valid number greater than 1.' });
     }
     next();

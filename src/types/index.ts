@@ -130,7 +130,7 @@ export interface IPropertyCount {
 }
 
 export interface IgetMaxPriceChangePercentageLastYear {
-  area: string;
+  area?: string;
   city: string;
   limit: number;
   purpose: string;
