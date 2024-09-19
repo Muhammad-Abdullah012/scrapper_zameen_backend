@@ -149,6 +149,18 @@ export const validatePropertyTypeFilter = async (req: Request, res: Response, ne
   }
 };
 
+/**
+ * Validate area_min (in square feet) and area_max (in square feet) filter query parameters.
+ *
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next function.
+ *
+ * @function
+ * @name validateAreaFilter
+ * @memberof module:middlewares/validation
+ * @inner
+ */
 export const validateAreaFilter = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { query } = req;
@@ -198,6 +210,32 @@ export const validateYearCountFilter = (req: Request, res: Response, next: NextF
     const { year_count } = query as { year_count: string };
     if (isInvalidNumber(year_count, 1) || !isValidRange(year_count, 1, 5)) {
       return returnBadRequestError({ res, message: 'Invalid year_count parameter. It must be a valid number between 1 and 5.' });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Validate area (in square feet) filter query parameter.
+ *
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next function.
+ *
+ * @function
+ * @name validateExactAreaFilter
+ * @memberof module:middlewares/validation
+ * @inner
+ */
+export const validateExactAreaFilter = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { query } = req;
+    query.area = query.area || '1';
+    const { area } = query as { area: string };
+    if (isInvalidNumber(area, 1)) {
+      return returnBadRequestError({ res, message: 'Invalid area parameter. It must be a valid number greater than 1.' });
     }
     next();
   } catch (err) {

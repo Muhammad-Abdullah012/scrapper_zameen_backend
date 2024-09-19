@@ -372,24 +372,25 @@ export class PropertyService {
     }));
   }
 
-  public async getMaxPriceChangePercentageLastYear({ city, limit, year_count, purpose, property_type }: IgetMaxPriceChangePercentageLastYear) {
+  public async getMaxPriceChangePercentageLastYear({ city, limit, year_count, purpose, property_type, area }: IgetMaxPriceChangePercentageLastYear) {
     const column = `percentage_change_${year_count}_year${year_count > 1 ? 's' : ''}`;
     const propertyTypesArray = splitAndTrimString(property_type);
 
     return TimeSeriesData.findAll({
       where: {
+        area,
         purpose,
-        city: {
-          [Op.iLike]: city,
-        },
         [column]: {
           [Op.ne]: null,
+        },
+        city: {
+          [Op.iLike]: city,
         },
         ...(property_type && { type: { [Op.in]: propertyTypesArray } }),
       },
       limit,
-      order: [[column, 'DESC']],
       raw: true,
+      order: [[column, 'DESC']],
     });
   }
 }

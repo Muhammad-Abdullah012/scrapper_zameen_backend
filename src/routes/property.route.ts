@@ -12,6 +12,7 @@ import {
   validateIsPostedByAgencyFilter,
   validateLimitFilter,
   validateYearCountFilter,
+  validateExactAreaFilter,
 } from '@/middlewares/validation.middleware';
 import { validatePaginationParamsMiddleware, validateSortParamsMiddleware } from '@/middlewares/pagination.middleware';
 
@@ -114,6 +115,7 @@ export class PropertyRoute implements Routes {
       validateLimitFilter,
       validatePurposeFilter,
       validateYearCountFilter,
+      validateExactAreaFilter,
       validatePropertyTypeFilter,
       this.property.getMaxPriceChangePercentageLastYear,
     );
