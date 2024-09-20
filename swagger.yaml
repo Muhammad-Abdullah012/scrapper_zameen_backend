@@ -977,6 +977,21 @@ paths:
           description: purpose of property (for_sale or for_rent)
           type: string
           default: "for_sale"
+        - name: property_type
+          in: query
+          description: Property Type
+          type: string
+          default: ""
+        - name: location_ids
+          in: query
+          description: Location IDs
+          type: string
+          default: ''
+        - name: area
+          in: query
+          description: Area in square feet
+          type: string
+          default: ""
       responses:
         200:
           description: List of properties

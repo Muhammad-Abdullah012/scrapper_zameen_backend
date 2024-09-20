@@ -428,6 +428,10 @@ TimeSeriesData.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    location_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     exist: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
