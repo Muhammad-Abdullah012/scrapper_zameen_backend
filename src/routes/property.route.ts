@@ -117,6 +117,7 @@ export class PropertyRoute implements Routes {
       validateYearCountFilter,
       validateExactAreaFilter,
       validatePropertyTypeFilter,
+      validateSearchQueryParamMiddleware,
       this.property.getMaxPriceChangePercentageLastYear,
     );
     this.router.get(
