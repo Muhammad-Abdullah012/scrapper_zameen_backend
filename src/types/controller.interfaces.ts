@@ -68,5 +68,6 @@ export interface IgetMaxPriceChangePercentageLastYearQueryParams {
   purpose: string;
   year_count: number;
   location_ids: string;
+  sort_order?: SORT_ORDER;
   property_type: PropertyType;
 }

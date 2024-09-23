@@ -13,6 +13,7 @@ import {
   validateLimitFilter,
   validateYearCountFilter,
   validateExactAreaFilter,
+  validateSortOrder,
 } from '@/middlewares/validation.middleware';
 import { validatePaginationParamsMiddleware, validateSortParamsMiddleware } from '@/middlewares/pagination.middleware';
 
@@ -112,6 +113,7 @@ export class PropertyRoute implements Routes {
     this.router.get(
       `${this.path}/price-change-percentage/:city`,
       validateCityParam,
+      validateSortOrder,
       validateLimitFilter,
       validatePurposeFilter,
       validateYearCountFilter,
