@@ -2,7 +2,7 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject, ValidationError } from 'class-validator';
 import { NextFunction, Request, Response } from 'express';
 import { HttpException } from '@exceptions/HttpException';
-import { AVAILABLE_CITIES } from '@/types';
+import { AVAILABLE_CITIES, SORT_ORDER } from '@/types';
 import { getPropertyPurpose, getPropertyTypes } from '@/utils/helpers';
 import { isInvalidNumber, isValidRange, PROPERTY_CATEGORY_MAP, returnBadRequestError } from '@/utils/validation.helpers';
 import { PropertyPurposeType, PropertyType } from '@/models/models';
@@ -235,6 +235,22 @@ export const validateExactAreaFilter = (req: Request, res: Response, next: NextF
     const { area } = query as { area: string };
     if (area && isInvalidNumber(area, 1)) {
       return returnBadRequestError({ res, message: 'Invalid area parameter. It must be a valid number greater than 1.' });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const validateSortOrder = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { query } = req;
+    const { sort_order } = query as { sort_order: SORT_ORDER };
+    if (sort_order && !Object.values(SORT_ORDER).includes(sort_order)) {
+      return returnBadRequestError({
+        res,
+        message: `Invalid sort_order parameter. It must be one of following ${Object.values(SORT_ORDER).join(', ')}.`,
+      });
     }
     next();
   } catch (err) {

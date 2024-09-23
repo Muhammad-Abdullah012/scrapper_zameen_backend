@@ -374,12 +374,13 @@ export class PropertyService {
 
   public async getMaxPriceChangePercentageLastYear({
     city,
-    limit,
-    year_count,
-    purpose,
-    property_type,
     area,
+    limit,
+    purpose,
+    year_count,
+    property_type,
     location_ids = '',
+    sort_order = SORT_ORDER.DESC,
   }: IgetMaxPriceChangePercentageLastYear) {
     const column = `percentage_change_${year_count}_year${year_count > 1 ? 's' : ''}`;
     const propertyTypesArray = splitAndTrimString(property_type);
@@ -400,7 +401,7 @@ export class PropertyService {
       },
       limit,
       raw: true,
-      order: [[column, 'DESC']],
+      order: [[column, sort_order]],
     });
   }
 }
