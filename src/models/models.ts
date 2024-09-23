@@ -390,3 +390,89 @@ CountPropertiesView.init(
   { type: { type: DataTypes.TEXT }, count: { type: DataTypes.INTEGER }, purpose: { type: DataTypes.TEXT } },
   { sequelize, tableName: 'countpropertiesview', timestamps: false, underscored: true },
 );
+
+export class TimeSeriesData extends Model {}
+
+TimeSeriesData.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    sub_location: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    type: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    purpose: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    area: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    urls: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    total_count: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    external_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    location_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    exist: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    price_change: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+    main_location: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    city: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    percentage_change_1_year: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    percentage_change_2_years: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    percentage_change_3_years: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    percentage_change_4_years: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+    percentage_change_5_years: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+    },
+  },
+  {
+    sequelize,
+    modelName: 'TimeSeries',
+    tableName: 'new_timeseries_data',
+    timestamps: false,
+  },
+);

@@ -5,6 +5,7 @@ import { IRequestWithSortingParams, SORT_COLUMNS, SORT_ORDER } from '@/types';
 import {
   IGetBestPropertiesQueryParams,
   IGetFeaturedPropertiesQueryParams,
+  IgetMaxPriceChangePercentageLastYearQueryParams,
   IGetPropertiesQueryParams,
   IGetPropertyCountQueryParams,
   IGetSimilarPropertiesQueryParams,
@@ -187,6 +188,29 @@ export class PropertyController {
     try {
       const response = await this.property.getLocationHierarchy();
       res.json({ data: response, message: 'location-hierarchy' });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getMaxPriceChangePercentageLastYear = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { query, params } = req;
+      const { limit, year_count, purpose, property_type, area, location_ids, sort_order } =
+        query as unknown as IgetMaxPriceChangePercentageLastYearQueryParams;
+      const { city } = params;
+
+      const result = await this.property.getMaxPriceChangePercentageLastYear({
+        area,
+        city,
+        purpose,
+        sort_order,
+        location_ids,
+        property_type,
+        limit: Number(limit),
+        year_count: Number(year_count),
+      });
+      res.json({ data: result, message: `max-price-change-percentage-last-${year_count}-year` });
     } catch (err) {
       next(err);
     }

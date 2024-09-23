@@ -6,6 +6,7 @@ import {
   IFeaturedPropertiesProps,
   IFindAllPropertiesProps,
   IGetBestPropertiesProps,
+  IgetMaxPriceChangePercentageLastYear,
   IGetPropertiesCountMapProps,
   IGetWhereClauseProps,
   ILocationHierarchy,
@@ -23,6 +24,7 @@ import {
   RankedPropertyForRentView,
   RankedPropertyForSaleView,
   CountPropertiesView,
+  TimeSeriesData,
 } from '@/models/models';
 import { splitAndTrimString } from '@/utils';
 import { sequelize } from '@/config/sequelize';
@@ -368,5 +370,38 @@ export class PropertyService {
       name: node.name,
       children: this.convertMapToHierarchy(new Map(node.children.map(child => [child.name, child]))),
     }));
+  }
+
+  public async getMaxPriceChangePercentageLastYear({
+    city,
+    area,
+    limit,
+    purpose,
+    year_count,
+    property_type,
+    location_ids = '',
+    sort_order = SORT_ORDER.DESC,
+  }: IgetMaxPriceChangePercentageLastYear) {
+    const column = `percentage_change_${year_count}_year${year_count > 1 ? 's' : ''}`;
+    const propertyTypesArray = splitAndTrimString(property_type);
+    const locationIds = splitAndTrimString(location_ids).map(Number);
+
+    return TimeSeriesData.findAll({
+      where: {
+        purpose,
+        [column]: {
+          [Op.ne]: null,
+        },
+        city: {
+          [Op.iLike]: city,
+        },
+        ...(area && { area }),
+        ...(location_ids && { location_id: { [Op.in]: locationIds } }),
+        ...(property_type && { type: { [Op.in]: propertyTypesArray } }),
+      },
+      limit,
+      raw: true,
+      order: [[column, sort_order]],
+    });
   }
 }

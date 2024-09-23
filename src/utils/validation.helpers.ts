@@ -18,3 +18,14 @@ export const PROPERTY_CATEGORY_MAP: { [key in PROPERTY_TYPE_CATEGORIES]: string 
 };
 
 export const returnBadRequestError = ({ res, message }: { res: Response; message: string }) => res.status(400).json({ message });
+
+export const isValidRange = (value: string, min: number, max: number) => {
+  if (min > max) {
+    /* swap min and max */
+    max ^= min;
+    min ^= max;
+    max ^= min;
+  }
+  const num = Number(value);
+  return num >= min && num <= max;
+};

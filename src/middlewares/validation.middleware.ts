@@ -2,9 +2,9 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject, ValidationError } from 'class-validator';
 import { NextFunction, Request, Response } from 'express';
 import { HttpException } from '@exceptions/HttpException';
-import { AVAILABLE_CITIES } from '@/types';
+import { AVAILABLE_CITIES, SORT_ORDER } from '@/types';
 import { getPropertyPurpose, getPropertyTypes } from '@/utils/helpers';
-import { isInvalidNumber, PROPERTY_CATEGORY_MAP, returnBadRequestError } from '@/utils/validation.helpers';
+import { isInvalidNumber, isValidRange, PROPERTY_CATEGORY_MAP, returnBadRequestError } from '@/utils/validation.helpers';
 import { PropertyPurposeType, PropertyType } from '@/models/models';
 import {
   IvalidateAreaFilterQueryParams,
@@ -149,6 +149,18 @@ export const validatePropertyTypeFilter = async (req: Request, res: Response, ne
   }
 };
 
+/**
+ * Validate area_min (in square feet) and area_max (in square feet) filter query parameters.
+ *
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next function.
+ *
+ * @function
+ * @name validateAreaFilter
+ * @memberof module:middlewares/validation
+ * @inner
+ */
 export const validateAreaFilter = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { query } = req;
@@ -170,6 +182,75 @@ export const validateIsPostedByAgencyFilter = (req: Request, res: Response, next
     const { is_posted_by_agency } = query as unknown as IvalidateIsPostedByAgencyFilterQueryParams;
     if (is_posted_by_agency && is_posted_by_agency !== 'false' && is_posted_by_agency !== 'true') {
       return returnBadRequestError({ res, message: 'Invalid is_posted_by_agency parameter. It must be either true or false.' });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const validateLimitFilter = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { query } = req;
+    query.limit = query.limit || '1';
+    const { limit } = query as { limit: string };
+    if (isInvalidNumber(limit, 1)) {
+      return returnBadRequestError({ res, message: 'Invalid limit parameter. It must be a valid number (minimum allowed value is 1).' });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const validateYearCountFilter = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { query } = req;
+    query.year_count = query.year_count || '1';
+    const { year_count } = query as { year_count: string };
+    if (isInvalidNumber(year_count, 1) || !isValidRange(year_count, 1, 5)) {
+      return returnBadRequestError({ res, message: 'Invalid year_count parameter. It must be a valid number between 1 and 5.' });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Validate area (in square feet) filter query parameter.
+ *
+ * @param {Request} req - Express request object.
+ * @param {Response} res - Express response object.
+ * @param {NextFunction} next - Express next function.
+ *
+ * @function
+ * @name validateExactAreaFilter
+ * @memberof module:middlewares/validation
+ * @inner
+ */
+export const validateExactAreaFilter = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { query } = req;
+    const { area } = query as { area: string };
+    if (area && isInvalidNumber(area, 1)) {
+      return returnBadRequestError({ res, message: 'Invalid area parameter. It must be a valid number greater than 1.' });
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const validateSortOrder = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { query } = req;
+    const { sort_order } = query as { sort_order: SORT_ORDER };
+    if (sort_order && !Object.values(SORT_ORDER).includes(sort_order)) {
+      return returnBadRequestError({
+        res,
+        message: `Invalid sort_order parameter. It must be one of following ${Object.values(SORT_ORDER).join(', ')}.`,
+      });
     }
     next();
   } catch (err) {
