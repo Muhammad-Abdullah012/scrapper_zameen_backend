@@ -123,6 +123,19 @@ export class PropertyRoute implements Routes {
       this.property.getMaxPriceChangePercentageLastYear,
     );
     this.router.get(
+      `${this.path}/price-change-data/:city`,
+      validateCityParam,
+      validateSortOrder,
+      validateLimitFilter,
+      validatePurposeFilter,
+      validateYearCountFilter,
+      validateExactAreaFilter,
+      validatePropertyTypeFilter,
+      validatePaginationParamsMiddleware,
+      validateSearchQueryParamMiddleware,
+      this.property.getPriceChangePercentageData,
+    );
+    this.router.get(
       `${this.path}/:city`,
       validatePaginationParamsMiddleware,
       validateSortParamsMiddleware,

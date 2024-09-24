@@ -1008,6 +1008,74 @@ paths:
                     type: string
                     example: "max-price-change-percentage-last-1-year"
 
+  /property/price-change-data/{city}:
+    get:
+      tags:
+      - property
+      summary: Provide properties along with price change percentage for last years (1 through 5 years)
+      description: List of properties
+      parameters:
+        - name: city
+          in: path
+          description: Name of the city to retrieve price change percentage for
+          required: true
+          type: string
+        - name: limit
+          in: query
+          description: Number of items to retrieve price change percentage for
+          type: string
+          default: "1"
+        - name: year_count
+          in: query
+          description: Number of last years to retrieve price change percentage for
+          type: string
+          default: "1"
+        - name: purpose
+          in: query
+          description: purpose of property (for_sale or for_rent)
+          type: string
+          default: "for_sale"
+        - name: property_type
+          in: query
+          description: Property Type
+          type: string
+          default: ""
+        - name: location_ids
+          in: query
+          description: Location IDs
+          type: string
+          default: ''
+        - name: area
+          in: query
+          description: Area in square feet
+          type: string
+          default: ""
+        - name: page_size
+          in: query
+          description: Number of items per page
+          type: integer
+          default: 10
+        - name: page_number
+          in: query
+          description: Page number
+          type: integer
+          default: 1
+      responses:
+        200:
+          description: List of properties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ''
+                  message:
+                    type: string
+                    example: "max-price-change-percentage-last-1-year"
+
   /property/locations:
     get:
       tags:

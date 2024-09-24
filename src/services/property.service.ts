@@ -7,6 +7,7 @@ import {
   IFindAllPropertiesProps,
   IGetBestPropertiesProps,
   IgetMaxPriceChangePercentageLastYear,
+  IgetPriceChangePercentageData,
   IGetPropertiesCountMapProps,
   IGetWhereClauseProps,
   ILocationHierarchy,
@@ -402,6 +403,45 @@ export class PropertyService {
       limit,
       raw: true,
       order: [[column, sort_order]],
+    });
+  }
+
+  public async getPriceChangePercentageData({
+    city,
+    area,
+    limit,
+    purpose,
+    page_size,
+    year_count,
+    page_number,
+    property_type,
+    location_ids = '',
+    sort_order = SORT_ORDER.DESC,
+  }: IgetPriceChangePercentageData) {
+    const column = `percentage_change_${year_count}_year${year_count > 1 ? 's' : ''}`;
+    const propertyTypesArray = splitAndTrimString(property_type);
+    const locationIds = splitAndTrimString(location_ids).map(Number);
+
+    return TimeSeriesData.findAll({
+      where: {
+        purpose,
+        [column]: {
+          [Op.ne]: null,
+        },
+        city: {
+          [Op.iLike]: city,
+        },
+        ...(area && { area }),
+        ...(location_ids && { location_id: { [Op.in]: locationIds } }),
+        ...(property_type && { type: { [Op.in]: propertyTypesArray } }),
+      },
+      attributes: {
+        exclude: ['price_change'],
+      },
+      limit,
+      raw: true,
+      order: [[column, sort_order]],
+      offset: (page_number - 1) * page_size,
     });
   }
 }
