@@ -13,7 +13,11 @@ import {
   validatePurposeFilter,
   validateSearchFiltersMiddleware,
   validateSearchQueryParamMiddleware,
+  validateYearCountFilter,
+  validateLimitFilter,
+  validateExactAreaFilter,
   ValidationMiddleware,
+  validateSortOrder,
 } from '../middlewares/validation.middleware';
 
 jest.mock('class-validator', () => ({
@@ -374,6 +378,99 @@ describe('All ValidationMiddlewares', () => {
     it('calls returnBadRequestError() when is_posted_by_agency is an invalid value', () => {
       req.query.is_posted_by_agency = 'invalid';
       validateIsPostedByAgencyFilter(req, res, next);
+      expectBadRequestError();
+    });
+  });
+  describe('validateLimitFilter', () => {
+    it('should call next() when limit is not provided', () => {
+      validateLimitFilter(req, res, next);
+      expect(req.query.limit).toBe('1');
+      expect(next).toHaveBeenCalled();
+    });
+    it('should call next() when limit is valid', () => {
+      req.query.limit = '3';
+      validateLimitFilter(req, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+    it('should return bad request error when limit < 1', () => {
+      req.query.limit = '0';
+      validateLimitFilter(req, res, next);
+      expectBadRequestError();
+    });
+    it('should return bad request error when limit is not a number', () => {
+      req.query.limit = 'abc';
+      validateLimitFilter(req, res, next);
+      expectBadRequestError();
+    });
+  });
+  describe('validateYearCountFilter', () => {
+    it('should call next() when year_count is not provided', () => {
+      validateYearCountFilter(req, res, next);
+      expect(req.query.year_count).toBe('1');
+      expect(next).toHaveBeenCalled();
+    });
+    it('should call next() when year_count is valid', () => {
+      req.query.year_count = '3';
+      validateYearCountFilter(req, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+    it('should return bad request error when year_count < 1', () => {
+      req.query.year_count = '0';
+      validateYearCountFilter(req, res, next);
+      expectBadRequestError();
+    });
+    it('should return bad request error when year_count > 5', () => {
+      req.query.year_count = '6';
+      validateYearCountFilter(req, res, next);
+      expectBadRequestError();
+    });
+    it('should return bad request error when year_count is not a number', () => {
+      req.query.year_count = 'abc';
+      validateYearCountFilter(req, res, next);
+      expectBadRequestError();
+    });
+  });
+  describe('validateExactAreaFilter', () => {
+    it('should call next() when area is not provided', () => {
+      validateExactAreaFilter(req, res, next);
+      expect(req.query.area).toBeUndefined();
+      expect(next).toHaveBeenCalled();
+    });
+    it('should call next() when area is valid', () => {
+      req.query.area = '3';
+      validateExactAreaFilter(req, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+    it('should return bad request error when area < 1', () => {
+      req.query.area = '0';
+      validateExactAreaFilter(req, res, next);
+      expectBadRequestError();
+    });
+    it('should return bad request error when area is not a number', () => {
+      req.query.area = 'abc';
+      validateExactAreaFilter(req, res, next);
+      expectBadRequestError();
+    });
+  });
+  describe('validateSortOrder', () => {
+    it('should call next() when sort_order is not provided', () => {
+      validateSortOrder(req, res, next);
+      expect(req.query.sort_order).toBeUndefined();
+      expect(next).toHaveBeenCalled();
+    });
+    it('should call next() when sort_order is valid', () => {
+      req.query.sort_order = 'DESC';
+      validateSortOrder(req, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+    it('should return bad request error when sort_order is invalid', () => {
+      req.query.sort_order = '0';
+      validateSortOrder(req, res, next);
+      expectBadRequestError();
+    });
+    it('should return bad request error when sort_order invalid', () => {
+      req.query.sort_order = 'abc';
+      validateSortOrder(req, res, next);
       expectBadRequestError();
     });
   });
