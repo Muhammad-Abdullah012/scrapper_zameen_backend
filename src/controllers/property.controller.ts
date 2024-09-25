@@ -6,6 +6,7 @@ import {
   IGetBestPropertiesQueryParams,
   IGetFeaturedPropertiesQueryParams,
   IgetMaxPriceChangePercentageLastYearQueryParams,
+  IgetPriceChangePercentageDataQueryParams,
   IGetPropertiesQueryParams,
   IGetPropertyCountQueryParams,
   IGetSimilarPropertiesQueryParams,
@@ -211,6 +212,31 @@ export class PropertyController {
         year_count: Number(year_count),
       });
       res.json({ data: result, message: `max-price-change-percentage-last-${year_count}-year` });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getPriceChangePercentageData = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { query, params } = req;
+      const { city } = params;
+      const { limit, year_count, purpose, property_type, area, location_ids, sort_order, page_number, page_size } =
+        query as unknown as IgetPriceChangePercentageDataQueryParams;
+
+      const result = await this.property.getPriceChangePercentageData({
+        area,
+        city,
+        purpose,
+        sort_order,
+        location_ids,
+        property_type,
+        limit: Number(limit),
+        page_size: Number(page_size),
+        year_count: Number(year_count),
+        page_number: Number(page_number),
+      });
+      res.json({ data: result, message: `price-change-percentage-data-${year_count}-year` });
     } catch (err) {
       next(err);
     }
