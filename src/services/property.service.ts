@@ -42,7 +42,7 @@ export class PropertyService {
   }
 
   private selectPropertyAttributes(): string[] {
-    return ['id', 'description', 'header', 'type', 'price', 'cover_photo_url', 'available', 'area', 'added', 'bedroom', 'bath'];
+    return ['id', 'description', 'header', 'type', 'price', 'cover_photo_url', 'available', 'area', 'added', 'created_at', 'bedroom', 'bath'];
   }
   private selectAttributes(includeProperties: string[] = []): FindAttributeOptions {
     return [
