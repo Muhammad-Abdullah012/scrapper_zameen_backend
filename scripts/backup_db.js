@@ -11,6 +11,19 @@ const credentials = require('../credentials/credentials.json');
 const folderId = DB_BACKUP_FOLDER_ID;
 const backupFileName = `zameen_scrapper_db_node_dump_${getCurrentDate()}.sql`;
 
+const requiredEnvVars = {
+  DB_BACKUP_FOLDER_ID,
+  POSTGRES_USER,
+  POSTGRES_DB,
+};
+
+for (const [key, value] of Object.entries(requiredEnvVars)) {
+  if (!value) {
+    console.error(`${key} is not set in the environment variables.`);
+    process.exit(1);
+  }
+}
+
 function getCurrentDate() {
   const now = new Date();
   const year = now.getFullYear();
