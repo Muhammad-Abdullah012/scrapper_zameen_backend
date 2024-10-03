@@ -96,6 +96,7 @@ async function uploadToDrive(auth, dumpStream) {
     console.log('File uploaded successfully.');
   } catch (error) {
     console.error('Error uploading file:', error);
+    throw error;
   }
 }
 
