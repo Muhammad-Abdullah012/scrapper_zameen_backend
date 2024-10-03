@@ -96,13 +96,14 @@ async function uploadToDrive(auth, dumpStream) {
     console.log('File uploaded successfully.');
   } catch (error) {
     console.error('Error uploading file:', error);
+    throw error;
   }
 }
 
 async function deleteOldBackups(auth) {
   const drive = google.drive({ version: 'v3', auth });
-  const threeDaysAgo = new Date();
-  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const listFiles = async () => {
     const response = await drive.files.list({
@@ -124,7 +125,8 @@ async function deleteOldBackups(auth) {
 
     for (const { id, name, createdTime } of files) {
       const fileCreatedTime = new Date(createdTime);
-      if (fileCreatedTime < threeDaysAgo) {
+      fileCreatedTime.setHours(0, 0, 0, 0);
+      if (fileCreatedTime < today) {
         await deleteFile(id);
         console.log(`Deleted old backup file: ${name}`);
       }
