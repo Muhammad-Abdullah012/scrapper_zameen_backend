@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { FindAttributeOptions, Includeable, InferAttributes, Op, QueryTypes, WhereOptions, col, fn, literal } from 'sequelize';
+import { FindAttributeOptions, Includeable, InferAttributes, Op, QueryTypes, WhereOptions, col, fn } from 'sequelize';
 import { POPULARITY_TREND_URL, AREA_TREND_URL, CONTACT_URL, FEATURED_PROPERTY_PRICE_THRESHOLD } from '@config/index';
 import {
   AVAILABLE_CITIES,
@@ -14,7 +14,6 @@ import {
   ISearchPropertiesProps,
   SORT_COLUMNS,
   SORT_ORDER,
-  SortingOrder,
 } from '@/types';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -55,15 +54,6 @@ export class PropertyService {
       ...includeProperties,
     ];
   }
-
-  private coalesceAddedAndCreatedAt = (sorting_order: SortingOrder) => {
-    return sorting_order.map(order => {
-      if (order[0] === SORT_COLUMNS.ADDED) {
-        order[0] = literal(`COALESCE("Property"."added", "Property"."created_at")`) as unknown as SORT_COLUMNS;
-      }
-      return order;
-    });
-  };
 
   private includeModelsInQuery = (): Includeable | Includeable[] => {
     return [
@@ -128,7 +118,7 @@ export class PropertyService {
         purpose,
         ...(city && { city_id: cityId }),
       },
-      order: this.coalesceAddedAndCreatedAt(sorting_order),
+      order: sorting_order,
       offset: (page_number - 1) * page_size,
       limit: page_size,
       include: this.includeModelsInQuery(),
@@ -288,7 +278,7 @@ export class PropertyService {
 
     return Property.findAndCountAll({
       where: whereClause,
-      order: this.coalesceAddedAndCreatedAt(sorting_order),
+      order: sorting_order,
       offset: (page_number - 1) * page_size,
       limit: page_size,
       include: this.includeModelsInQuery(),
@@ -335,7 +325,7 @@ export class PropertyService {
       },
       offset: (page_number - 1) * page_size,
       limit: page_size,
-      order: this.coalesceAddedAndCreatedAt(sorting_order),
+      order: sorting_order,
     });
   }
 
