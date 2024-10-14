@@ -3,13 +3,14 @@ const { google } = require('googleapis');
 const { JWT } = require('google-auth-library');
 const { PassThrough } = require('stream');
 const { resolve } = require('path');
+const { createGzip } = require('node:zlib');
 const cliProgress = require('cli-progress');
 require('dotenv').config({ path: resolve(__dirname, '..', '.env.production.local') });
 
 const { DB_BACKUP_FOLDER_ID, POSTGRES_USER, POSTGRES_DB } = process.env;
 const credentials = require('../credentials/credentials.json');
 const folderId = DB_BACKUP_FOLDER_ID;
-const backupFileName = `zameen_scrapper_db_node_dump_${getCurrentDate()}.sql`;
+const backupFileName = `zameen_scrapper_db_node_dump_${getCurrentDate()}.sql.gz`;
 
 const requiredEnvVars = {
   DB_BACKUP_FOLDER_ID,
@@ -34,6 +35,8 @@ function getCurrentDate() {
 
 function createDbDumpStream() {
   const dumpStream = new PassThrough();
+  const gzipStream = createGzip();
+
   const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   progressBar.start(100, 0);
   const dumpProcess = spawn('sudo', ['docker', 'exec', '-t', 'my_postgres_container', 'pg_dump', '-c', '-U', POSTGRES_USER, POSTGRES_DB]);
@@ -47,7 +50,7 @@ function createDbDumpStream() {
     progressBar.update(progress);
   });
 
-  dumpProcess.stdout.pipe(dumpStream);
+  dumpProcess.stdout.pipe(gzipStream).pipe(dumpStream);
 
   dumpProcess.stderr.on('data', data => {
     console.error(`pg_dumpall stderr: ${data}`);
@@ -76,7 +79,7 @@ async function uploadToDrive(auth, dumpStream) {
 
   const fileMetadata = {
     name: backupFileName,
-    mimeType: 'application/sql',
+    mimeType: 'application/gzip',
     parents: [folderId],
   };
 
